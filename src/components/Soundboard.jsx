@@ -3,11 +3,16 @@ import PropTypes from "prop-types";
 import '../styles/Soundboard.css';
 
 export const approvedSounds = [
+    'boo1',
+    'crybaby',
     'doh',
     'doit',
-    'boo1',
+    'fart1',
+    'fart2',
+    'fart3',
     'odd',
     'oops',
+    'scream1',
     'tilted1',
 ];
 

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Dice from "./Dice";
 import Shoutout from "./Shoutout";
 import Soundboard, { approvedSounds } from "./Soundboard";
+import Giphy, {approvedGifs} from "./Giphy";
 
 const timeout = 10;
 
@@ -41,7 +42,7 @@ class Messages extends PureComponent {
                 );
             case '!so':
                 return (
-                    <Shoutout shoutOut={message.params.shoutOut} />
+                    <Shoutout shoutOut={message.params.shoutOut}/>
                 )
             case '!sound':
                 if (message.params.rest.length > 0 && approvedSounds.includes(message.params.rest[0].toLowerCase())) {
@@ -49,6 +50,14 @@ class Messages extends PureComponent {
                         <Soundboard {...message.params} />
                     );
                 }
+                break;
+            case '!gif':
+                if (message.params.rest.length > 0 && approvedGifs.includes(message.params.rest[0].toLowerCase())) {
+                    return (
+                        <Giphy {...message.params} />
+                    );
+                }
+                break;
             default:
                 // uh now what, do nothing
                 break;

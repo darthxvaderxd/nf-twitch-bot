@@ -72,14 +72,19 @@ module.exports = [
         command: '!sounds',
         cb: (client, params, target) => {
             const sounds = [
+                'boo1',
+                'crybaby',
                 'doh',
                 'doit',
-                'boo1',
+                'fart1',
+                'fart2',
+                'fart3',
                 'odd',
                 'oops',
+                'scream1',
                 'tilted1',
             ];
-           client.say(target, `Available sounders are ${sounds.join(', ')}`);
+           client.say(target, `Available sounders are ${sounds.join(', ')}, you can do !sound <sound>, this is a sub only command`);
         },
         coolDown: 10,
     },
@@ -93,5 +98,69 @@ module.exports = [
             // }
         },
         coolDown: 10,
-    }
+    },
+    {
+        command: '!ban',
+        cb: (client, params, target) => {
+            const user = (params.rest[0] || params.displayName).replace('@', '');
+            client.say(target, `@${user} has been banned Kappa`);
+        },
+        coolDown: 5,
+    },
+    {
+        command: '!addsound',
+        cb: (client, params, target) => {
+            client.say(target, `if you are a sub you can add a sound just give me an mp3 in dm`);
+        },
+        coolDown: 5,
+    },
+    {
+        command: '^',
+        cb: (client, params, target) => {
+            client.say(target, '^^');
+        },
+        coolDown: 5,
+    },
+    {
+        command: '!twitter',
+        cb: (client, params, target) => {
+            client.say(target, 'add me on twitter at https://twitter.com/LeoSaintPoker');
+        },
+        coolDown: 5,
+    },
+    {
+        command: '!gifs',
+        cb: (client, params, target) => {
+            const images = [
+                'catdance1',
+                'catdance2',
+                'madbro',
+                'nailedit',
+                'salty',
+                'tableflip1',
+                'tableflip2',
+                'tilted',
+            ];
+            client.say(target, `Available gifs are ${images.join(', ')}, you can do !gif <gif>, this is a sub only command`);
+        },
+        coolDown: 10,
+    },
+    {
+        command: '!gif',
+        cb: (client, params, target) => {
+            // if (params.subscriber || params.isMod) {
+            saveQueueMessage({
+                ...params,
+            });
+            // }
+        },
+        coolDown: 10,
+    },
+    {
+        command: '!addgif',
+        cb: (client, params, target) => {
+            client.say(target, `if you are a sub you can add a gif just give me a link to the picture in dm`);
+        },
+        coolDown: 5,
+    },
 ]
