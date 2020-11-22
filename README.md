@@ -6,6 +6,11 @@
 
 ```json
 {
-  "twitchAuthToken": "your-token-here"
+  "twitchUsername": "your-user-name",
+  "twitchAuthToken": "your-token-here",
+  "twitchChannels": [
+    "channel1",
+    "channel2"
+  ]
 }
 ```

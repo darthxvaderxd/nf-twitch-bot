@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
     "prestart": "npm run build",
-    "start": "webpack serve",
+    "start": "node server.js",
+    "start:webpack": "webpack serve",
     "start:dev": "npm run build && webpack --watch"
   },
   "repository": {
@@ -31,7 +32,9 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "express": "^4.17.1",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "tmi.js": "^1.5.0"
   }
 }
