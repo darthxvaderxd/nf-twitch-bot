@@ -12,9 +12,10 @@ const saveQueueMessage = (message) => {
 
 /**
  * This allows you to add custom chat commands, just read up on javascript if you don't know about it...
- * @type {({command: string, cb: cb}|{command: string, cb: cb})[]}
+ * @type {({command: string, cb: cb, coolDown: number})[]}
  *
  * This is an array of objects with expected command which is a string and cb which is a function to call back
+ * if you want the command to have a coolDown set it to a number in seconds
  */
 module.exports = [
     {
@@ -27,7 +28,7 @@ module.exports = [
                 client.say(target, `@${params.displayName} nice try ${numberOfDice} is too high limit is 10 dice`);
             } else {
                 for (let i = 0; i < numberOfDice; i += 1) {
-                    rolls.push(Math.ceil(Math.random() * 6));
+                    rolls.push(Math.floor(Math.random() * 6) + 1);
                 }
 
                 const sum = rolls.reduce((a, b) => a + b);
@@ -43,6 +44,7 @@ module.exports = [
                 client.say(target, message);
             }
         },
+        coolDown: 10,
     },
     {
         command: '!so',
@@ -57,11 +59,39 @@ module.exports = [
                 client.say(target, message);
             }
         },
+        coolDown: 10,
     },
     {
         command: '!botcode',
         cb: (client, params, target) => {
             client.say(target, 'You can get the bot source code at https://github.com/darthxvaderxd/nf-twitch-bot');
         },
+        coolDown: 0,
     },
+    {
+        command: '!sounds',
+        cb: (client, params, target) => {
+            const sounds = [
+                'doh',
+                'doit',
+                'boo1',
+                'odd',
+                'oops',
+                'tilted1',
+            ];
+           client.say(target, `Available sounders are ${sounds.join(', ')}`);
+        },
+        coolDown: 10,
+    },
+    {
+        command: '!sound',
+        cb: (client, params, target) => {
+            // if (params.subscriber || params.isMod) {
+                saveQueueMessage({
+                    ...params,
+                });
+            // }
+        },
+        coolDown: 10,
+    }
 ]

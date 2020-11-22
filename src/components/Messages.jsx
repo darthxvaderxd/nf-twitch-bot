@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Dice from "./Dice";
 import Shoutout from "./Shoutout";
+import Soundboard, { approvedSounds } from "./Soundboard";
 
 const timeout = 10;
 
@@ -42,6 +43,12 @@ class Messages extends PureComponent {
                 return (
                     <Shoutout shoutOut={message.params.shoutOut} />
                 )
+            case '!sound':
+                if (message.params.rest.length > 0 && approvedSounds.includes(message.params.rest[0].toLowerCase())) {
+                    return (
+                        <Soundboard {...message.params} />
+                    );
+                }
             default:
                 // uh now what, do nothing
                 break;
@@ -66,7 +73,9 @@ class Messages extends PureComponent {
         const { queue } = this.props;
         if (queue.length > 0) {
             const message = queue[0];
-            this.removeFromQueue(message);
+            if (!window.queueLocked) {
+                this.removeFromQueue(message);
+            }
             return this.getComponentForMessage(message);
         } else {
             this.fetchList();

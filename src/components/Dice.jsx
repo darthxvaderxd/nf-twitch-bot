@@ -16,7 +16,7 @@ export default class Dice extends PureComponent {
                 <div className="Dice-container">
                     {rolls.map((roll, i) =>  (
                         <div className="Dice-die">
-                            {roll}
+                            <img className="Dice-die-img" src={`/images/dice/${roll}.png`}  alt={roll} />
                         </div>
                     ))}
                 </div>

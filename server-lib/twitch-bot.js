@@ -1,5 +1,6 @@
 const tmi = require('tmi.js');
 const token = require('../token.json');
+const get = require('lodash/get');
 
 const params = {
     identity: {
@@ -19,22 +20,32 @@ const onMessageHandler =  (target, context, message, self) => {
     const rest = message.split(' ');
     const command = rest.shift();
     const { displayName, username, subscriber, mod, badges } = context;
-    const isMod = mod ? mod : badges.broadcaster === '1';
+    const isMod = mod ? mod : get(badges, 'broadcaster', 0) === '1';
+
     // TODO: remove this
-    console.log(new Date(), `Chat Received => ${displayName}: ${message}`, 'command => ', command);
+    console.log(new Date(), `Chat Received => ${displayName}: ${message}`, 'isMod => ', isMod);
 
     // logic to process commands -- this adds possibility for multiple hooks one command
     const filteredHooks = hooks.filter((h) => h.command.toLowerCase() === command.toLowerCase());
     if (filteredHooks) {
         filteredHooks.forEach((hook) => {
+            if (hook.coolDown !== 0) { // validate not on cooldown
+                const now = new Date();
+                if (typeof hook.unlocks !== 'undefined' && hook.unlocks > now.getTime()) {
+                    console.log(new Date(), `${command} is on cool down`);
+                    return;
+                }
+                now.setSeconds(now.getSeconds() + hook.coolDown);
+                hook.unlocks = now.getTime();
+            }
            hook.cb(client, { username, displayName, subscriber, isMod, command, rest}, target);
         });
     }
 };
 
-module.exports.onMessageReceived = (command, cb) => {
+module.exports.onMessageReceived = (command, cb, coolDown) => {
     if (client) {
-        hooks.push({ command, cb });
+        hooks.push({ command, cb, coolDown });
     } else {
         console.log(new Date(), 'You need to call connect first');
     }

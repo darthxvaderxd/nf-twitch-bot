@@ -3,11 +3,14 @@ const path = require('path');
 const fs = require('fs');
 const twitchBot = require('./server-lib/twitch-bot');
 const chatCommands = require('./chat-commands');
+const port = process.env.PORT || 8000;
 
 const app = express();
 
 app.use(express.static(path.resolve(__dirname ,'/dist')));
-app.listen(8000);
+app.listen(port, () =>{
+    console.log(new Date(), `Server running on http://localhost:${port}/`);
+});
 
 app.get('/api/queue', (request, response) => {
     const messages = [];
@@ -31,5 +34,5 @@ app.get('*', express.static(path.join(__dirname, 'dist')));
 twitchBot.connect();
 
 chatCommands.forEach((command) => {
-   twitchBot.onMessageReceived(command.command, command.cb);
+   twitchBot.onMessageReceived(command.command, command.cb, command.coolDown);
 });
