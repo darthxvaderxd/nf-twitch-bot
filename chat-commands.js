@@ -1,3 +1,15 @@
+const fs = require('fs');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid')
+
+const saveQueueMessage = (message) => {
+    const now = new Date();
+    fs.writeFileSync(
+        path.join(__dirname, `/dist/messages/${now.valueOf()}-${uuidv4()}.json`),
+        JSON.stringify(message),
+    );
+}
+
 /**
  * This allows you to add custom chat commands, just read up on javascript if you don't know about it...
  * @type {({command: string, cb: cb}|{command: string, cb: cb})[]}
@@ -23,16 +35,25 @@ module.exports = [
                 const extra = numberOfDice === 1 ? '' : ` totaling ${sum}`;
 
                 const message = `@${params.displayName} rolled ${numberOfDice} ${word}: [${rolls.join(', ')}]${extra}`;
+                saveQueueMessage({
+                    ...params,
+                    numberOfDice,
+                    rolls,
+                });
                 client.say(target, message);
             }
         },
     },
     {
-        command: '!s',
+        command: '!so',
         cb: (client, params, target) => {
             if (params.isMod) {
                 const user = (params.rest[0] || params.displayName).replace('@', '');
                 const message = `Hey do me a huge favor and go checkout out @${user} at https://twitch.tv/${user}`;
+                saveQueueMessage({
+                    ...params,
+                    shoutOut: user,
+                });
                 client.say(target, message);
             }
         },

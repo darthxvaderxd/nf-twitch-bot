@@ -27,7 +27,7 @@ const onMessageHandler =  (target, context, message, self) => {
     const filteredHooks = hooks.filter((h) => h.command.toLowerCase() === command.toLowerCase());
     if (filteredHooks) {
         filteredHooks.forEach((hook) => {
-           hook.cb(client, { username, displayName, subscriber, isMod, rest }, target);
+           hook.cb(client, { username, displayName, subscriber, isMod, command, rest}, target);
         });
     }
 };
