@@ -12,6 +12,7 @@ export const approvedSounds = [
     'fart3',
     'odd',
     'oops',
+    'pika',
     'scream1',
     'tilted1',
 ];
@@ -41,7 +42,6 @@ export default class Soundboard extends PureComponent {
 
     play() {
         const { audio } = this.state;
-        console.log('audio => ', audio);
         audio.play();
         this.setState({ playing: true });
     }

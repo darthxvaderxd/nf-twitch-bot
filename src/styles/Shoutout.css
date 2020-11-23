@@ -12,3 +12,9 @@
     padding: 0.8rem;
     text-align: center;
 }
+
+.ShoutOut-image {
+    border: 0.1rem none #ccc;
+    border-radius: 1.6rem;
+    padding: 0;
+}

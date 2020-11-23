@@ -5,6 +5,7 @@ import Dice from "./Dice";
 import Shoutout from "./Shoutout";
 import Soundboard, { approvedSounds } from "./Soundboard";
 import Giphy, {approvedGifs} from "./Giphy";
+import Hangman from "./Hangman";
 
 const timeout = 10;
 
@@ -21,11 +22,13 @@ class Messages extends PureComponent {
     removeFromQueue(message) {
         const { dispatch } = this.props;
         const tim = setTimeout(() => {
-            dispatch({
-                type: 'REMOVE_FROM_QUEUE',
-                id: message.id,
-            });
-            // memory issues clear it, bad tim
+            if (!window.queueLocked) {
+                dispatch({
+                    type: 'REMOVE_FROM_QUEUE',
+                    id: message.id,
+                });
+                // memory issues clear it, bad tim
+            }
             clearTimeout(tim);
         }, timeout * 1000);
     }
@@ -42,7 +45,7 @@ class Messages extends PureComponent {
                 );
             case '!so':
                 return (
-                    <Shoutout shoutOut={message.params.shoutOut}/>
+                    <Shoutout {...message.params} />
                 )
             case '!sound':
                 if (message.params.rest.length > 0 && approvedSounds.includes(message.params.rest[0].toLowerCase())) {
@@ -58,6 +61,10 @@ class Messages extends PureComponent {
                     );
                 }
                 break;
+            case '!hangman':
+                return (
+                    <Hangman {...this.props} {...message} />
+                );
             default:
                 // uh now what, do nothing
                 break;
@@ -78,13 +85,10 @@ class Messages extends PureComponent {
     }
 
     render() {
-        console.log('props => ', this.props);
         const { queue } = this.props;
         if (queue.length > 0) {
             const message = queue[0];
-            if (!window.queueLocked) {
-                this.removeFromQueue(message);
-            }
+            this.removeFromQueue(message);
             return this.getComponentForMessage(message);
         } else {
             this.fetchList();

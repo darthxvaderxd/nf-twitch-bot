@@ -1,4 +1,7 @@
 dist/bundle.js
+dist/hangman/*
+dist/messages/*
+dist/streams/*
 token.json
 node_modules/
 .idea/

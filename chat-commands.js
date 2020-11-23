@@ -1,11 +1,29 @@
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid')
+const { getUser } = require('./server-lib/twitch-api');
+
+const requireSub = false
 
 const saveQueueMessage = (message) => {
     const now = new Date();
     fs.writeFileSync(
         path.join(__dirname, `/dist/messages/${now.valueOf()}-${uuidv4()}.json`),
+        JSON.stringify(message),
+    );
+}
+
+
+const clearHangman = () => {
+    fs.readdirSync(path.join(__dirname, '/dist/hangman')).forEach((file) => {
+        // yes I know this is blocking.... but only one user should be needing it so idc
+        fs.unlinkSync(path.join(__dirname, `/dist/hangman/${file}`))
+    });
+}
+const saveHangManGuess = (message) => {
+    const now = new Date();
+    fs.writeFileSync(
+        path.join(__dirname, `/dist/hangman/${now.valueOf()}-${uuidv4()}.json`),
         JSON.stringify(message),
     );
 }
@@ -48,13 +66,26 @@ module.exports = [
     },
     {
         command: '!so',
-        cb: (client, params, target) => {
+        cb: async (client, params, target) => {
             if (params.isMod) {
-                const user = (params.rest[0] || params.displayName).replace('@', '');
-                const message = `Hey do me a huge favor and go checkout out @${user} at https://twitch.tv/${user}`;
+                const userName = (params.rest[0] || params.displayName).replace('@', '');
+                const user = await getUser(userName);
+                let stream = null;
+                try {
+                    const filePath = path.join(__dirname, `dist/streams/${userName.toLowerCase()}.json`);
+                    stream = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                } catch (e) {
+                    // do nothing
+                }
+                const message = !stream
+                    ? `Hey do me a huge favor and go checkout out @${userName} at https://twitch.tv/${userName}`
+                    : `Hey do me a huge favor and go checkout out @${userName} at https://twitch.tv/${userName}`
+                    + ` they were last seen playing ${stream.game_name}`;
                 saveQueueMessage({
                     ...params,
-                    shoutOut: user,
+                    shoutOut: userName,
+                    user: user ? user._data : undefined,
+                    stream,
                 });
                 client.say(target, message);
             }
@@ -81,6 +112,7 @@ module.exports = [
                 'fart3',
                 'odd',
                 'oops',
+                'pika',
                 'scream1',
                 'tilted1',
             ];
@@ -91,11 +123,11 @@ module.exports = [
     {
         command: '!sound',
         cb: (client, params, target) => {
-            // if (params.subscriber || params.isMod) {
+            if ((params.subscriber || params.isMod) && requireSub || !requireSub) {
                 saveQueueMessage({
                     ...params,
                 });
-            // }
+            }
         },
         coolDown: 10,
     },
@@ -132,10 +164,13 @@ module.exports = [
         command: '!gifs',
         cb: (client, params, target) => {
             const images = [
+                'cat1',
+                'cat2',
                 'catdance1',
                 'catdance2',
                 'madbro',
                 'nailedit',
+                'nooo',
                 'salty',
                 'tableflip1',
                 'tableflip2',
@@ -148,11 +183,11 @@ module.exports = [
     {
         command: '!gif',
         cb: (client, params, target) => {
-            // if (params.subscriber || params.isMod) {
-            saveQueueMessage({
-                ...params,
-            });
-            // }
+            if ((params.subscriber || params.isMod)  && requireSub || !requireSub) {
+                saveQueueMessage({
+                    ...params,
+                });
+            }
         },
         coolDown: 10,
     },
@@ -162,5 +197,43 @@ module.exports = [
             client.say(target, `if you are a sub you can add a gif just give me a link to the picture in dm`);
         },
         coolDown: 5,
+    },
+    {
+        command: '!hangman',
+        cb: (client, params, target) => {
+            if (params.isMod) {
+                clearHangman();
+                saveQueueMessage({
+                    ...params,
+                });
+
+                client.say(target, `@${params.displayName} has started a game of hangman, to guess type !guess <letter>, !solve <word>`);
+            }
+        },
+        coolDown: 5,
+    },
+    {
+        command: '!guess',
+        cb: (client, params, target) => {
+            if (params.rest.length > 0) {
+                saveHangManGuess({
+                    letter: params.rest[0].toLowerCase(),
+                    word: false,
+                });
+            }
+        },
+        coolDown: 0,
+    },
+    {
+        command: '!solve',
+        cb: (client, params, target) => {
+            if (params.rest.length > 0) {
+                saveHangManGuess({
+                    letter: false,
+                    word: params.rest[0].toLowerCase(),
+                });
+            }
+        },
+        coolDown: 0,
     },
 ]

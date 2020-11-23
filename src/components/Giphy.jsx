@@ -3,10 +3,13 @@ import PropTypes from "prop-types";
 import '../styles/Giphy.css';
 
 export const approvedGifs = [
+    'cat1',
+    'cat2',
     'catdance1',
     'catdance2',
     'madbro',
     'nailedit',
+    'nooo',
     'salty',
     'tableflip1',
     'tableflip2',

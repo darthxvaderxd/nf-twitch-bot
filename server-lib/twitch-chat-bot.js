@@ -23,7 +23,7 @@ const onMessageHandler =  (target, context, message, self) => {
     const isMod = mod ? mod : get(badges, 'broadcaster', 0) === '1';
 
     // TODO: remove this
-    console.log(new Date(), `Chat Received => ${displayName}: ${message}`, 'isMod => ', isMod);
+    console.log(new Date(), `Chat Received => ${displayName}: ${message}`, 'isMod => ' , isMod);
 
     // logic to process commands -- this adds possibility for multiple hooks one command
     const filteredHooks = hooks.filter((h) => h.command.toLowerCase() === command.toLowerCase());

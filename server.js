@@ -1,7 +1,8 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const twitchBot = require('./server-lib/twitch-bot');
+const twitchBot = require('./server-lib/twitch-chat-bot');
+const twitchApi = require('./server-lib/twitch-api');
 const chatCommands = require('./chat-commands');
 const port = process.env.PORT || 8000;
 
@@ -23,7 +24,23 @@ app.get('/api/queue', (request, response) => {
             // yes I know this is blocking.... but only one user should be needing it so idc
             fs.unlinkSync(filePath)
         }
-    })
+    });
+
+    response.send(JSON.stringify({ messages }));
+});
+
+app.get('/api/hangman', (request, response) => {
+    const messages = [];
+
+    // yes I know this is blocking.... but only one user should be needing it so idc
+    fs.readdirSync(path.join(__dirname, '/dist/hangman')).forEach((file) => {
+        if (messages.length < 1) {
+            const filePath = path.join(__dirname, `/dist/hangman/${file}`);
+            messages.push({ id: file, params: require(filePath) });
+            // yes I know this is blocking.... but only one user should be needing it so idc
+            fs.unlinkSync(filePath)
+        }
+    });
 
     response.send(JSON.stringify({ messages }));
 });
@@ -32,6 +49,7 @@ app.get('*', express.static(path.join(__dirname, 'dist')));
 
 // start twitch bot
 twitchBot.connect();
+twitchApi.beginLiveFriendsLoop();
 
 chatCommands.forEach((command) => {
    twitchBot.onMessageReceived(command.command, command.cb, command.coolDown);
