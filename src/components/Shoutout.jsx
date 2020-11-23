@@ -23,17 +23,15 @@ export default class Shoutout extends PureComponent {
 
         let extra = '';
         if (stream) {
-            extra = `last seen playing ${stream.game_name}`;
+            extra = `Last seen playing ${stream.game_name}`;
         }
 
         return (
             <div className="ShoutOut">
                 {picture}
-                Please do me a huge favor! <br />
-                Go and checkout {shoutOut}. <br />
-                You can see them at <br />
+                Please Go and checkout {shoutOut}. <br />
+                You can see them at when they are live <br />
                 https://twitch.tv/{shoutOut} <br />
-                Look for the link is in chat! <br />
                 {extra}
             </div>
         )

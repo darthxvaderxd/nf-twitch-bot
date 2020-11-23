@@ -68,3 +68,4 @@ module.exports.beginLiveFriendsLoop = () => {
 module.exports.getLiveFriends = () => liveFriends;
 module.exports.getUser = getUser;
 module.exports.getStream = getStream;
+module.exports.isLive = isStreamLive;

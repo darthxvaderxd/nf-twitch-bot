@@ -6,6 +6,7 @@ const initialState = {
         letters: [],
         words: [],
     },
+    stopWatchStream: false,
 };
 
 function queueReducer(state = initialState.queue, action) {
@@ -39,7 +40,18 @@ function hangmanReducer(state = initialState.guesses, action) {
     }
 }
 
+function watchReducer(state = initialState.stopWatchStream, action) {
+    switch(action.type) {
+        case 'SHOULD_STOP_WATCH':
+            return true;
+        case 'SHOULD_START_WATCH':
+            return false;
+    }
+    return state;
+}
+
 export default combineReducers({
     queue: queueReducer,
     guesses: hangmanReducer,
+    stopWatchStream: watchReducer,
 });

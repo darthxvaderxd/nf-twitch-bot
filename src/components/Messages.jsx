@@ -6,6 +6,7 @@ import Shoutout from "./Shoutout";
 import Soundboard, { approvedSounds } from "./Soundboard";
 import Giphy, {approvedGifs} from "./Giphy";
 import Hangman from "./Hangman";
+import Twitch from "./TwitchPlr";
 
 const timeout = 10;
 
@@ -64,6 +65,10 @@ class Messages extends PureComponent {
             case '!hangman':
                 return (
                     <Hangman {...this.props} {...message} />
+                );
+            case '!watch':
+                return (
+                    <Twitch {...this.props} {...message} {...message.params} />
                 );
             default:
                 // uh now what, do nothing

@@ -1,7 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid')
-const { getUser } = require('./server-lib/twitch-api');
+const {
+    getUser,
+    getLiveFriends,
+    isLive,
+    getStream,
+} = require('./server-lib/twitch-api');
 
 const requireSub = false
 
@@ -13,19 +18,23 @@ const saveQueueMessage = (message) => {
     );
 }
 
-
 const clearHangman = () => {
     fs.readdirSync(path.join(__dirname, '/dist/hangman')).forEach((file) => {
         // yes I know this is blocking.... but only one user should be needing it so idc
         fs.unlinkSync(path.join(__dirname, `/dist/hangman/${file}`))
     });
 }
+
 const saveHangManGuess = (message) => {
     const now = new Date();
     fs.writeFileSync(
         path.join(__dirname, `/dist/hangman/${now.valueOf()}-${uuidv4()}.json`),
         JSON.stringify(message),
     );
+}
+
+const saveWatchStream = (cancelWatch) => {
+    fs.writeFileSync(path.join(__dirname, '/dist/streams/_watching.json'), JSON.stringify({ stopWatchStream: cancelWatch }));
 }
 
 /**
@@ -78,8 +87,8 @@ module.exports = [
                     // do nothing
                 }
                 const message = !stream
-                    ? `Hey do me a huge favor and go checkout out @${userName} at https://twitch.tv/${userName}`
-                    : `Hey do me a huge favor and go checkout out @${userName} at https://twitch.tv/${userName}`
+                    ? `Hey do me a huge favor and go checkout out @${userName} at twitch.tv/${userName}`
+                    : `Hey do me a huge favor and go checkout out @${userName} at twitch.tv/${userName}`
                     + ` they were last seen playing ${stream.game_name}`;
                 saveQueueMessage({
                     ...params,
@@ -232,6 +241,58 @@ module.exports = [
                     letter: false,
                     word: params.rest[0].toLowerCase(),
                 });
+            }
+        },
+        coolDown: 0,
+    },
+    {
+        command: '!friends',
+        cb: (client, params, target) => {
+            if (params.isMod) {
+                const friends = getLiveFriends().map((friend) => `twitch.tv/${friend}`).slice(0, 5);
+                if (friends.length > 0) {
+                    client.say(target, `Some of my friends are live check them out: ${friends.join(' ')}`);
+                }
+            }
+        },
+        coolDown: 10,
+    },
+    {
+        command: '!watch',
+        cb: async (client, params, target) => {
+            if (params.isMod && params.rest.length > 0) {
+                const userName = params.rest[0];
+                const streamUp = await isLive(userName);
+                if (!streamUp) {
+                    client.say(target, `${userName} is not live right now...`);
+                } else {
+                    const stream = await getStream(userName);
+                    if (stream) {
+                        const {_data: data} = stream;
+                        client.say(
+                            target,
+                            `Hey lets enjoy watching some ${userName} for a brief moment, `
+                                  + `they are playing ${data.game_name} - ${data.title}`,
+                        );
+
+                        saveQueueMessage({
+                            ...params,
+                            streamer: userName,
+                            stream: data,
+                        });
+                        saveWatchStream(false);
+                    }
+                }
+            }
+        },
+        coolDown: 10,
+    },
+    {
+        command: '!stop',
+        cb: (client, params, target) => {
+            if (params.isMod) {
+                saveWatchStream(true);
+                client.say(target, 'Thanks for watching my friend with me');
             }
         },
         coolDown: 0,

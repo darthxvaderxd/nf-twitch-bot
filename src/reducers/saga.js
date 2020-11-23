@@ -35,10 +35,26 @@ function* fetchHangmanGuesses() {
     }
 }
 
+function* fetchShouldStopWatch() {
+    try {
+        const response = yield call(fetch, 'http://localhost:8000/api/watch');
+        const data = yield response.json();
+        if (data.stopWatchStream === true) {
+            yield put({
+                type: 'SHOULD_STOP_WATCH',
+            });
+            window.queueLocked = false;
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 function* sagas() {
     yield all([
         takeEvery('FETCH_QUEUE', fetchQueue),
-        takeEvery('FETCH_HANGMAN_GUESSES', fetchHangmanGuesses)
+        takeEvery('FETCH_HANGMAN_GUESSES', fetchHangmanGuesses),
+        takeEvery('FETCH_SHOULD_STOP_WATCH', fetchShouldStopWatch)
     ]);
 }
 

@@ -45,6 +45,19 @@ app.get('/api/hangman', (request, response) => {
     response.send(JSON.stringify({ messages }));
 });
 
+app.get('/api/watch', (request, response) => {
+    let data = { stopWatchStream: false }
+    try {
+        // yes I know this is blocking.... but only one user should be needing it so idc
+        const text = fs.readFileSync(path.join(__dirname, 'dist/streams/_watching.json'), 'utf8');
+        data = JSON.parse(text);
+    } catch (e) {
+       // meh, yolo
+    }
+
+    response.send(JSON.stringify(data));
+});
+
 app.get('*', express.static(path.join(__dirname, 'dist')));
 
 // start twitch bot
