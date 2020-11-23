@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import '../styles/TwitchPlr.css';
+import '../styles/YouTubePlr.css';
 
 let timmy  = null;
 
-class TwitchPlr extends PureComponent {
+class YouTubePlr extends PureComponent {
     constructor(props) {
         window.queueLocked = true;
         const { dispatch } = props;
@@ -41,48 +41,24 @@ class TwitchPlr extends PureComponent {
         }
     }
 
-    componentDidMount() {
-        new window.Twitch.Embed("twitch-embed", {
-            width: 1400,
-            height: 600,
-            channel: window.stream,
-        });
-        const tim = setTimeout(() => {
-            const list = document.getElementsByClassName('tw-core-button--primary');
-            if (list.length > 0) {
-                list.forEach((button) => {
-                    button.click();
-                });
-            }
-            clearTimeout(tim);
-        }, 1500);
-    }
-
     render() {
-        const {
-            streamer,
-            stream,
-        } = this.props;
-        window.stream = streamer;
+        const { video } = this.props;
         return (
-            <div className="TwitchPlr">
-                <div className="TwitchPlr-streamer">
-                    {streamer}
-                </div>
-                <div id="twitch-embed" />
-                <div className="TwitchPlr-title">
-                    Playing:
-                    <span className="TwitchPlr-game">{stream.game_name}</span>
-                    - {stream.title}
-                </div>
+            <div className="YouTubePlr">
+                <iframe
+                    width="1280"
+                    height="720"
+                    src={`https://www.youtube.com/embed/${video}?autoplay=1`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen />
             </div>
         );
     }
 }
 
-TwitchPlr.propTypes = {
-    streamer: PropTypes.string.isRequired,
-    stream: PropTypes.object.isRequired,
+YouTubePlr.propTypes = {
+    video: PropTypes.object.isRequired,
     id: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
     stopWatchStream: PropTypes.bool.isRequired,
@@ -94,4 +70,4 @@ export default connect((state, props) => {
         ...state,
         ...props,
     };
-})(TwitchPlr);
+})(YouTubePlr);

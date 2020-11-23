@@ -7,6 +7,7 @@ import Soundboard, { approvedSounds } from "./Soundboard";
 import Giphy, {approvedGifs} from "./Giphy";
 import Hangman from "./Hangman";
 import Twitch from "./TwitchPlr";
+import YouTubePlr from "./YouTubePlr";
 
 const timeout = 10;
 
@@ -70,6 +71,10 @@ class Messages extends PureComponent {
                 return (
                     <Twitch {...this.props} {...message} {...message.params} />
                 );
+            case '!yt':
+                return (
+                    <YouTubePlr {...this.props} {...message} {...message.params} />
+                )
             default:
                 // uh now what, do nothing
                 break;

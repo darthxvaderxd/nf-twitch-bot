@@ -288,6 +288,24 @@ module.exports = [
         coolDown: 10,
     },
     {
+        command: '!yt',
+        cb: (client, params, target) => {
+            if (params.isMod && params.rest.length > 0) {
+                const video = params.rest[0];
+                saveWatchStream(false);
+                saveQueueMessage({
+                    ...params,
+                    video,
+                });
+                client.say(
+                    target,
+                    `We are going to watch https://www.youtube.com/watch?v=${video} grab some popcorn lets go`,
+                );
+            }
+        },
+        coolDown: 10,
+    },
+    {
         command: '!stop',
         cb: (client, params, target) => {
             if (params.isMod) {
