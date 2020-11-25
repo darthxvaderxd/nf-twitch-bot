@@ -145,11 +145,11 @@ twitchApi.beginLiveFriendsLoop();
 fs.readdirSync(path.join(__dirname, '/server-lib/commands')).forEach((file) => {
     const chatCommands = require(path.join(__dirname, `/server-lib/commands/${file}`));
     chatCommands.forEach((command) => {
-        twitchBot.onMessageReceived(command.command, command.cb, command.coolDown);
+        twitchBot.onMessageReceived(command);
     });
 });
 
 // load the user customized chat commands
 customChatCommands.forEach((command) => {
-   twitchBot.onMessageReceived(command.command, command.cb, command.coolDown);
+   twitchBot.onMessageReceived(command);
 });

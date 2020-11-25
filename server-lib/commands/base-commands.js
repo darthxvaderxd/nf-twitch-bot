@@ -100,6 +100,7 @@ module.exports = [
                 client.say(target, message);
             }
         },
+        modOnly: true,
         coolDown: 10,
     },
     {
@@ -139,6 +140,7 @@ module.exports = [
                 });
             }
         },
+        subscriberOnly: true,
         coolDown: 10,
     },
     {
@@ -220,6 +222,7 @@ module.exports = [
                 client.say(target, `@${params.displayName} has started a game of hangman, to guess type !guess <letter>, !solve <word>`);
             }
         },
+        modOnly: true,
         coolDown: 5,
     },
     {
@@ -256,6 +259,7 @@ module.exports = [
                 }
             }
         },
+        modOnly: true,
         coolDown: 10,
     },
     {
@@ -286,6 +290,7 @@ module.exports = [
                 }
             }
         },
+        modOnly: true,
         coolDown: 10,
     },
     {
@@ -304,6 +309,7 @@ module.exports = [
                 );
             }
         },
+        modOnly: true,
         coolDown: 10,
     },
     {
@@ -314,6 +320,7 @@ module.exports = [
                 client.say(target, 'Thanks for watching my friend with me');
             }
         },
+        modOnly: true,
         coolDown: 0,
     },
 ];

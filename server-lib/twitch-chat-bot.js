@@ -26,26 +26,43 @@ const onMessageHandler =  (target, context, message, self) => {
     console.log(new Date(), `Chat Received => ${displayName}: ${message}`, 'isMod => ' , isMod);
 
     // logic to process commands -- this adds possibility for multiple hooks one command
-    const filteredHooks = hooks.filter((h) => h.command.toLowerCase() === command.toLowerCase());
+    const filteredHooks = hooks.filter(
+        (h) => typeof h.command === 'string' && h.command.toLowerCase() === command.toLowerCase(),
+    );
     if (filteredHooks) {
         filteredHooks.forEach((hook) => {
-            if (hook.coolDown !== 0) { // validate not on cooldown
+            const {
+                cb = () => {},
+                coolDown = 0,
+                modOnly = false,
+                subscriberOnly = false,
+                unlocks = undefined,
+            } = hook;
+            if (coolDown !== 0) { // validate not on cooldown
                 const now = new Date();
-                if (typeof hook.unlocks !== 'undefined' && hook.unlocks > now.getTime()) {
+                if (typeof unlocks !== 'undefined' && unlocks > now.getTime()) {
                     console.log(new Date(), `${command} is on cool down`);
                     return;
                 }
-                now.setSeconds(now.getSeconds() + hook.coolDown);
+                now.setSeconds(now.getSeconds() + coolDown);
                 hook.unlocks = now.getTime();
             }
-           hook.cb(client, { username, displayName, subscriber, isMod, command, rest}, target);
+            if ((modOnly && !isMod) || (subscriberOnly && !subscriber)) {
+                if (modOnly) {
+                    client.say(target, `@${displayName} you do not have access to this moderator only command`);
+                } else if (subscriberOnly) {
+                    client.say(target, `@${displayName} access to this command could be yours by subscribing to the channel`);
+                }
+            } else {
+                cb(client, {username, displayName, subscriber, isMod, command, rest}, target);
+            }
         });
     }
 };
 
-module.exports.onMessageReceived = (command, cb, coolDown) => {
+module.exports.onMessageReceived = (command) => {
     if (client) {
-        hooks.push({ command, cb, coolDown });
+        hooks.push(command);
     } else {
         console.log(new Date(), 'You need to call connect first');
     }

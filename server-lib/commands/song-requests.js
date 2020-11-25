@@ -75,6 +75,7 @@ module.exports = [
                 client.say(target, 'Good Lord this song... Skipping');
             }
         },
+        modOnly: true,
         coolDown: 0,
     },
     {
@@ -85,6 +86,7 @@ module.exports = [
                 client.say(target, 'Song requests are paused');
             }
         },
+        modOnly: true,
         coolDown: 0,
     },
     {
@@ -95,6 +97,7 @@ module.exports = [
                 client.say(target, 'Song requests are resumed');
             }
         },
+        modOnly: true,
         coolDown: 0,
     },
 ];

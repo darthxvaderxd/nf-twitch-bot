@@ -89,6 +89,7 @@ module.exports = [
                 }
             }
         },
+        modOnly: true,
         coolDown: 10,
     },
 ]
