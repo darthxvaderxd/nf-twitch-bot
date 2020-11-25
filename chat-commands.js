@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid')
+const { v4: uuidv4 } = require('uuid');
 const {
     getUser,
     getLiveFriends,
@@ -367,6 +367,8 @@ module.exports = [
                 } else {
                     client.say(target, 'Song not found');
                 }
+            } else {
+                client.say(target, 'You can add a song request with a search term or YouTube video id');
             }
         },
         coolDown: 0,

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "mkdirs": "mkdirp ./dist/hangman && mkdirp ./dist/messages && mkdirp ./dist/streams && mkdirp ./dist/song_requests",
+    "mkdirs": "mkdirp ./dist/hangman && mkdirp ./dist/messages && mkdirp ./dist/streams && mkdirp ./dist/song_requests && mkdirp ./dist/trivia && mkdirp ./dist/trivia_questions",
     "prestart": "npm run build && npm run mkdirs",
     "start": "node server.js",
     "start:webpack": "webpack serve",
@@ -36,6 +36,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "lodash": "^4.17.20",
     "prop-types": "^15.7.2",

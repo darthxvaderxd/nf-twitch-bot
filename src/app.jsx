@@ -8,6 +8,8 @@ import reducer from './reducers/index';
 import saga from './reducers/saga';
 import Messages from './components/Messages';
 import SongRequest from './components/SongRequest';
+import TriviaAdmin from './components/TriviaAdmin';
+import TriviaGame from './components/TrivaGame';
 
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware();
@@ -31,6 +33,8 @@ ReactDOM.render(
             <div>
                 <Route path="/interact" component={Messages} />
                 <Route path="/music" component={SongRequest} />
+                <Route path="/game/trivia" component={TriviaGame} />
+                <Route path="/trivia/admin" component={TriviaAdmin} />
             </div>
         </Router>
     </Provider>,

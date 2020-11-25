@@ -75,6 +75,20 @@ function* fetchShouldSkipSong() {
     }
 }
 
+function* saveTriviaQuestion(action) {
+    try {
+        const params = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(action.question),
+        };
+        const response = yield call(fetch, 'http://localhost:8000/api/new_trivia_question', params);
+        console.log(yield response.json());
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 function* sagas() {
     yield all([
         takeEvery('FETCH_QUEUE', fetchQueue),
@@ -82,6 +96,7 @@ function* sagas() {
         takeEvery('FETCH_SHOULD_STOP_WATCH', fetchShouldStopWatch),
         takeEvery('FETCH_SONG_QUEUE', fetchSongQueue),
         takeEvery('FETCH_SHOULD_SKIP_SONG', fetchShouldSkipSong),
+        takeEvery('SAVE_TRIVIA_QUESTION', saveTriviaQuestion),
     ]);
 }
 

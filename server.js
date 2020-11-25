@@ -1,6 +1,9 @@
 const express = require('express');
+const bodyParser = require('body-parser')
 const path = require('path');
 const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
+
 const twitchBot = require('./server-lib/twitch-chat-bot');
 const twitchApi = require('./server-lib/twitch-api');
 const chatCommands = require('./chat-commands');
@@ -11,9 +14,13 @@ const app = express();
 
 function serveIndex(request, response) {
     response.sendFile(path.join(__dirname + '/dist/index.html'));
-};
+}
 
 app.use(express.static(path.resolve(__dirname ,'/dist')));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.raw());
+
 app.listen(port, () =>{
     console.log(new Date(), `Server running on http://localhost:${port}/`);
 });
@@ -95,8 +102,25 @@ app.get('/api/should_skip_song', (request, response) => {
     response.send(JSON.stringify(data));
 });
 
+app.post('/api/new_trivia_question', (request, response) => {
+    try {
+        // blocking i know :p, we've been over this
+        const now = new Date();
+        fs.writeFileSync(
+            path.join(__dirname, `/dist/trivia_questions/${now.valueOf()}-${uuidv4()}.json`),
+            JSON.stringify(request.body),
+        );
+        return { result: 'ok' };
+    } catch (e) {
+        console.log(e);
+        return { error: e.message };
+    }
+});
+
 app.get('/interact', serveIndex);
 app.get('/music', serveIndex);
+app.get('/game/trivia', serveIndex);
+app.get('/trivia/admin', serveIndex);
 
 app.get('*', express.static(path.join(__dirname, 'dist')));
 

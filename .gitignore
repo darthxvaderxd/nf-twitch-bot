@@ -3,6 +3,8 @@ dist/hangman/*
 dist/messages/*
 dist/streams/*
 dist/song_requests/*
+dist/trivia_questions/*
+dist/trivia/*
 token.json
 node_modules/
 .idea/

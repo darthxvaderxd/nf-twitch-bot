@@ -1,0 +1,44 @@
+.TriviaAdmin {
+    border: 0.2rem solid #f00;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    font-size: 1.8rem;
+    width: 75%;
+    text-align: center;
+}
+
+.TriviaAdmin-label {
+    background-color: #777;
+    color: #fff;
+    font-size: 1.8rem;
+    padding: 0.8rem 0.4rem;
+}
+
+.TriviaAdmin-input {
+    background-color: #999;
+    text-align: center;
+    width: 95%;
+    padding: 0.8rem 0.4rem;
+}
+
+input[type=text], input[type=button], textarea, select {
+    border: 0.1rem solid #f00;
+    font-size: 1.8rem;
+    width: 95%;
+}
+
+textarea {
+    height: 10.0rem;
+}
+
+input[type=button] {
+    background-color: #f00;
+    color: #ffff;
+    margin-right: 0.8rem;
+    width: 25%;
+}
+
+.TriviaAdmin-buttons {
+    background-color: #222;
+    width: 100%;
+}
