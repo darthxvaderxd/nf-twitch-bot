@@ -6,8 +6,8 @@ const { v4: uuidv4 } = require('uuid');
 
 const twitchBot = require('./server-lib/twitch-chat-bot');
 const twitchApi = require('./server-lib/twitch-api');
-const chatCommands = require('./chat-commands');
-const { saveSkipSong } = require('./chat-commands');
+const customChatCommands = require('./chat-commands');
+const { saveSkipSong } = require('./server-lib/commands/song-requests');
 const port = process.env.PORT || 8000;
 
 const app = express();
@@ -141,6 +141,15 @@ app.get('*', express.static(path.join(__dirname, 'dist')));
 twitchBot.connect();
 twitchApi.beginLiveFriendsLoop();
 
-chatCommands.forEach((command) => {
+// load the packaged commands
+fs.readdirSync(path.join(__dirname, '/server-lib/commands')).forEach((file) => {
+    const chatCommands = require(path.join(__dirname, `/server-lib/commands/${file}`));
+    chatCommands.forEach((command) => {
+        twitchBot.onMessageReceived(command.command, command.cb, command.coolDown);
+    });
+});
+
+// load the user customized chat commands
+customChatCommands.forEach((command) => {
    twitchBot.onMessageReceived(command.command, command.cb, command.coolDown);
 });
