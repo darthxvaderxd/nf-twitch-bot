@@ -50,6 +50,10 @@ const saveSkipSong = (skipSong) => {
     fs.writeFileSync(path.join(__dirname, '/dist/streams/_skip.json'), JSON.stringify({ skipSong }));
 }
 
+const savePauseSong = (pauseSong) => {
+    fs.writeFileSync(path.join(__dirname, '/dist/streams/_pause.json'), JSON.stringify({ pauseSong }));
+}
+
 /**
  * This allows you to add custom chat commands, just read up on javascript if you don't know about it...
  * @type {({command: string, cb: cb, coolDown: number})[]}
@@ -378,7 +382,28 @@ module.exports = [
         cb: (client, params, target) => {
             if (params.isMod) {
                 saveSkipSong(true);
+                savePauseSong(false);
                 client.say(target, 'Good Lord this song... Skipping');
+            }
+        },
+        coolDown: 0,
+    },
+    {
+        command: '!pause',
+        cb: (client, params, target) => {
+            if (params.isMod) {
+                savePauseSong(true);
+                client.say(target, 'Song requests are paused');
+            }
+        },
+        coolDown: 0,
+    },
+    {
+        command: '!resume',
+        cb: (client, params, target) => {
+            if (params.isMod) {
+                savePauseSong(false);
+                client.say(target, 'Song requests are resumed');
             }
         },
         coolDown: 0,

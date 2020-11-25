@@ -11,6 +11,7 @@ const initialState = {
     videos: [],
     stopWatchStream: false,
     skipSong: false,
+    pauseSong: false,
     defaultPlaylist,
 };
 
@@ -76,7 +77,17 @@ function skipSongReducer(state = initialState.skipSong, action) {
     return state;
 }
 
-function defaultPlaylistReducer(state = initialState.defaultPlaylist, action) {
+function pauseSongReducer(state = initialState.pauseSong, action) {
+    switch (action.type) {
+        case 'SHOULD_PAUSE_SONG':
+            return true;
+        case 'SHOULD_NOT_PAUSE_SONG':
+            return false;
+    }
+    return state;
+}
+
+function playlistReducer(state = initialState.defaultPlaylist, action) {
     return state;
 }
 
@@ -86,5 +97,6 @@ export default combineReducers({
     stopWatchStream: watchReducer,
     videos: songRequestReducer,
     skipSong: skipSongReducer,
-    defaultPlaylist: defaultPlaylistReducer,
+    pauseSong: pauseSongReducer,
+    defaultPlaylist: playlistReducer,
 });

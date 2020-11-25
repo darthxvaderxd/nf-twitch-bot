@@ -5,9 +5,9 @@ import '../styles/YouTubePlr.css';
 
 let player = null;
 let playing = false;
+let paused = false;
 let timmy = null;
 let currentVideo = null;
-let playingPL = false;
 
 class SongRequest extends PureComponent {
     constructor(props) {
@@ -25,9 +25,6 @@ class SongRequest extends PureComponent {
             dispatch({
                 type: 'FETCH_SONG_QUEUE',
             });
-            dispatch({
-                type: 'FETCH_SHOULD_SKIP_SONG',
-            });
         }, 1000);
     }
 
@@ -36,7 +33,11 @@ class SongRequest extends PureComponent {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const { dispatch, skipSong } = this.props;
+        const { dispatch, skipSong, pauseSong } = this.props;
+        if (paused && pauseSong === false) {
+            player.playVideo();
+            paused = false;
+        }
         if (skipSong) {
             dispatch({type: 'SHOULD_NOT_SKIP_SONG'});
             dispatch({
@@ -47,18 +48,19 @@ class SongRequest extends PureComponent {
             setTimeout(this.playNextSong, 500);
         } else if (playing === false) {
             this.playNextSong();
+        } else if (pauseSong) {
+            paused = true;
+            player.pauseVideo();
         }
     }
 
     playNextSong() {
         const {
-            defaultPlaylist,
             dispatch,
             videos,
         } = this.props;
         if (videos.length > 0 && playing === false) {
             currentVideo = videos[0].params;
-            playingPL = false;
             if (player === null) {
                 player = new window.YT.Player('yt-player', {
                     width: 1280,
@@ -87,14 +89,6 @@ class SongRequest extends PureComponent {
                 player.loadVideoById({'videoId': currentVideo.videoId});
                 playing = true;
             }
-        } else if (player && playingPL === false) {
-            playingPL = true;
-            player.loadPlaylist({ list: defaultPlaylist });
-            player.setLoop(true)
-            playing = true;
-        } else if (player && playingPL) {
-            player.nextVideo();
-            playing = true;
         }
     }
 
@@ -106,10 +100,10 @@ class SongRequest extends PureComponent {
 }
 
 SongRequest.propTypes = {
-    defaultPlaylist: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
     videos: PropTypes.array.isRequired,
-    skipSong: PropTypes.array.isRequired,
+    skipSong: PropTypes.bool.isRequired,
+    pauseSong: PropTypes.bool.isRequired,
 };
 
 export default connect((state, props) => {

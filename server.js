@@ -102,6 +102,19 @@ app.get('/api/should_skip_song', (request, response) => {
     response.send(JSON.stringify(data));
 });
 
+app.get('/api/should_pause_song', (request, response) => {
+    let data = { pauseSong: false }
+    try {
+        // yes I know this is blocking.... but only one user should be needing it so idc
+        const text = fs.readFileSync(path.join(__dirname, 'dist/streams/_pause.json'), 'utf8');
+        data = JSON.parse(text);
+    } catch (e) {
+        // meh, yolo
+    }
+
+    response.send(JSON.stringify(data));
+});
+
 app.post('/api/new_trivia_question', (request, response) => {
     try {
         // blocking i know :p, we've been over this

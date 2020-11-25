@@ -51,6 +51,7 @@ function* fetchShouldStopWatch() {
 }
 
 function* fetchSongQueue() {
+    // check for new songs
     try {
         const response = yield call(fetch, 'http://localhost:8000/api/song_requests');
         const data = yield response.json();
@@ -61,14 +62,26 @@ function* fetchSongQueue() {
     } catch (e) {
         console.error(e);
     }
-}
 
-function* fetchShouldSkipSong() {
+    // check for song skips
     try {
         const response = yield call(fetch, 'http://localhost:8000/api/should_skip_song');
         const data = yield response.json();
         if (data.skipSong === true) {
             yield put({ type: 'SHOULD_SKIP_SONG' });
+        }
+    } catch (e) {
+        console.error(e);
+    }
+
+    // check for pause/unpause
+    try {
+        const response = yield call(fetch, 'http://localhost:8000/api/should_pause_song');
+        const data = yield response.json();
+        if (data.pauseSong === true) {
+            yield put({ type: 'SHOULD_PAUSE_SONG' });
+        } else {
+            yield put({ type: 'SHOULD_NOT_PAUSE_SONG' });
         }
     } catch (e) {
         console.error(e);
@@ -95,7 +108,6 @@ function* sagas() {
         takeEvery('FETCH_HANGMAN_GUESSES', fetchHangmanGuesses),
         takeEvery('FETCH_SHOULD_STOP_WATCH', fetchShouldStopWatch),
         takeEvery('FETCH_SONG_QUEUE', fetchSongQueue),
-        takeEvery('FETCH_SHOULD_SKIP_SONG', fetchShouldSkipSong),
         takeEvery('SAVE_TRIVIA_QUESTION', saveTriviaQuestion),
     ]);
 }
