@@ -2,6 +2,7 @@ dist/bundle.js
 dist/hangman/*
 dist/messages/*
 dist/streams/*
+dist/song_requests/*
 token.json
 node_modules/
 .idea/

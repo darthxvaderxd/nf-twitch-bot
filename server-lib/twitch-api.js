@@ -23,29 +23,38 @@ const getStream = (userName) => {
 
 // Code for checking if friends are live
 const isStreamLive = async (userName) => {
-    const user = await getUser(userName);
-    if (!user) {
+    try {
+        const user = await getUser(userName);
+        if (!user) {
+            return false;
+        }
+
+        const stream = await getStream(userName);
+        if (stream) { // save the latest stream info we can use this later
+            fs.writeFileSync(path.join(__dirname, `../dist/streams/${userName.toLowerCase()}.json`), JSON.stringify(stream._data, null, 2));
+        }
+        return await user.getStream() !== null;
+    } catch (e) {
+        console.error(new Date(), e);
         return false;
     }
-
-    const stream = await getStream(userName);
-    if (stream) { // save the latest stream info we can use this later
-        fs.writeFileSync(path.join(__dirname, `../dist/streams/${userName.toLowerCase()}.json`), JSON.stringify(stream._data, null, 2));
-    }
-    return await user.getStream() !== null;
 }
 
 const checkLiveFriends = async () => {
     for (let i = 0; i < friendsOfStream.length; i += 1) {
-        const username = friendsOfStream[i];
-        const live = await isStreamLive(username);
-        if (live && !liveFriends.includes(username)) {
-            liveFriends.push(username);
-        } else if (!live && liveFriends.includes(username)) {
-            const index = liveFriends.findIndex(username);
-            if (index > -1) {
-                liveFriends.splice(index, 1);
+        try {
+            const username = friendsOfStream[i];
+            const live = await isStreamLive(username);
+            if (live && !liveFriends.includes(username)) {
+                liveFriends.push(username);
+            } else if (!live && liveFriends.includes(username)) {
+                const index = liveFriends.findIndex(username);
+                if (index > -1) {
+                    liveFriends.splice(index, 1);
+                }
             }
+        } catch (e) {
+            console.error(new Date(), e);
         }
     }
 

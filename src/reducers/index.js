@@ -1,4 +1,6 @@
 import { combineReducers } from 'redux';
+const { defaultPlaylist } = require('../../token.json');
+
 
 const initialState = {
     queue: [],
@@ -6,7 +8,10 @@ const initialState = {
         letters: [],
         words: [],
     },
+    videos: [],
     stopWatchStream: false,
+    skipSong: false,
+    defaultPlaylist,
 };
 
 function queueReducer(state = initialState.queue, action) {
@@ -50,8 +55,36 @@ function watchReducer(state = initialState.stopWatchStream, action) {
     return state;
 }
 
+function songRequestReducer(state = initialState.videos, action) {
+    switch (action.type) {
+        case 'UPDATED_SONG_QUEUE':
+            return [...state, ...action.videos];
+        case 'REMOVE_SONG_FROM_QUEUE':
+            const queue = Object.values(state).filter((q) => q.params.videoId !== action.video.videoId);
+            return [ ...queue ];
+    }
+    return state;
+}
+
+function skipSongReducer(state = initialState.skipSong, action) {
+    switch (action.type) {
+        case 'SHOULD_SKIP_SONG':
+            return true;
+        case 'SHOULD_NOT_SKIP_SONG':
+            return false;
+    }
+    return state;
+}
+
+function defaultPlaylistReducer(state = initialState.defaultPlaylist, action) {
+    return state;
+}
+
 export default combineReducers({
     queue: queueReducer,
     guesses: hangmanReducer,
     stopWatchStream: watchReducer,
+    videos: songRequestReducer,
+    skipSong: skipSongReducer,
+    defaultPlaylist: defaultPlaylistReducer,
 });

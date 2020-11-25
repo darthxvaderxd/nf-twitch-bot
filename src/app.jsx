@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
+import { Route, BrowserRouter as Router } from 'react-router-dom';
 import reducer from './reducers/index';
 import saga from './reducers/saga';
-import Messages from "./components/Messages";
+import Messages from './components/Messages';
+import SongRequest from './components/SongRequest';
 
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware();
@@ -25,9 +27,12 @@ sagaMiddleware.run(saga);
 
 ReactDOM.render(
     <Provider store={store}>
-        <div>
-            <Messages />
-        </div>
+        <Router>
+            <div>
+                <Route path="/interact" component={Messages} />
+                <Route path="/music" component={SongRequest} />
+            </div>
+        </Router>
     </Provider>,
     document.getElementById('nf-root'),
 );

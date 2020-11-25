@@ -50,11 +50,38 @@ function* fetchShouldStopWatch() {
     }
 }
 
+function* fetchSongQueue() {
+    try {
+        const response = yield call(fetch, 'http://localhost:8000/api/song_requests');
+        const data = yield response.json();
+        yield put({
+            type: 'UPDATED_SONG_QUEUE',
+            videos: data.songs,
+        });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function* fetchShouldSkipSong() {
+    try {
+        const response = yield call(fetch, 'http://localhost:8000/api/should_skip_song');
+        const data = yield response.json();
+        if (data.skipSong === true) {
+            yield put({ type: 'SHOULD_SKIP_SONG' });
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 function* sagas() {
     yield all([
         takeEvery('FETCH_QUEUE', fetchQueue),
         takeEvery('FETCH_HANGMAN_GUESSES', fetchHangmanGuesses),
-        takeEvery('FETCH_SHOULD_STOP_WATCH', fetchShouldStopWatch)
+        takeEvery('FETCH_SHOULD_STOP_WATCH', fetchShouldStopWatch),
+        takeEvery('FETCH_SONG_QUEUE', fetchSongQueue),
+        takeEvery('FETCH_SHOULD_SKIP_SONG', fetchShouldSkipSong),
     ]);
 }
 

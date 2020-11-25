@@ -7,6 +7,7 @@ const {
     isLive,
     getStream,
 } = require('./server-lib/twitch-api');
+const yts = require( 'yt-search' );
 
 const requireSub = false
 
@@ -35,6 +36,18 @@ const saveHangManGuess = (message) => {
 
 const saveWatchStream = (cancelWatch) => {
     fs.writeFileSync(path.join(__dirname, '/dist/streams/_watching.json'), JSON.stringify({ stopWatchStream: cancelWatch }));
+}
+
+const saveSongRequest = (video) => {
+    const now = new Date();
+    fs.writeFileSync(
+        path.join(__dirname, `/dist/song_requests/${now.valueOf()}-${uuidv4()}.json`),
+        JSON.stringify(video),
+    );
+}
+
+const saveSkipSong = (skipSong) => {
+    fs.writeFileSync(path.join(__dirname, '/dist/streams/_skip.json'), JSON.stringify({ skipSong }));
 }
 
 /**
@@ -315,4 +328,59 @@ module.exports = [
         },
         coolDown: 0,
     },
+    {
+        command: '!sr',
+        cb: async (client, params, target) => {
+            // for now if rest is just 1 then it's a videoId, if its more its not
+            let video = null
+            const ytSearch = async (searchPhrase) => {
+                try {
+                    const results = await yts(searchPhrase);
+                    video = results.videos.length > 1
+                        ? results.videos[0]
+                        : null;
+                } catch (e) {
+                    // do nothing
+                }
+            }
+            if (params.rest.length > 0) {
+                const isSongId = params.rest.length === 1;
+                if (isSongId) {
+                    try {
+                        video = await yts({videoId: params.rest[0]});
+                    } catch (e) {
+                        // do nothing
+                    }
+                    if (!video) {
+                        await ytSearch(params.rest[0]);
+                    }
+                } else {
+                    const searchPhrase = params.rest.join(' ');
+                    await ytSearch(searchPhrase);
+                }
+                if (video) {
+                    const author = typeof video.author !== 'undefined'
+                        ? ` by ${video.author.name}`
+                        : '';
+                    saveSongRequest(video);
+                    client.say(target, `Added ${video.title}${author} to queue`);
+                } else {
+                    client.say(target, 'Song not found');
+                }
+            }
+        },
+        coolDown: 0,
+    },
+    {
+        command: '!skip',
+        cb: (client, params, target) => {
+            if (params.isMod) {
+                saveSkipSong(true);
+                client.say(target, 'Good Lord this song... Skipping');
+            }
+        },
+        coolDown: 0,
+    },
 ]
+
+module.exports.saveSkipSong = saveSkipSong;
