@@ -13,6 +13,8 @@ const initialState = {
     skipSong: false,
     pauseSong: false,
     defaultPlaylist,
+    triviaQuestions: [],
+    triviaAnswers: [],
 };
 
 function queueReducer(state = initialState.queue, action) {
@@ -91,6 +93,22 @@ function playlistReducer(state = initialState.defaultPlaylist, action) {
     return state;
 }
 
+function triviaQuestionsReducer(state = initialState.triviaQuestions, action) {
+    switch (action.type) {
+        case 'UPDATE_TRIVIA_QUESTIONS':
+            return action.triviaQuestions;
+    }
+    return state;
+}
+
+function triviaAnswersReducer(state = initialState.triviaAnswers, action) {
+    switch (action.type) {
+        case 'UPDATE_TRIVIA_ANSWERS':
+            return [...state, ...action.triviaQuestions];
+    }
+    return state;
+}
+
 export default combineReducers({
     queue: queueReducer,
     guesses: hangmanReducer,
@@ -99,4 +117,6 @@ export default combineReducers({
     skipSong: skipSongReducer,
     pauseSong: pauseSongReducer,
     defaultPlaylist: playlistReducer,
+    triviaQuestions: triviaQuestionsReducer,
+    triviaAnswers: triviaAnswersReducer,
 });

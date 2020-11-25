@@ -102,6 +102,28 @@ function* saveTriviaQuestion(action) {
     }
 }
 
+function* fetchTriviaQuestions() {
+    try {
+        const response = yield call(fetch, 'http://localhost:8000/api/fetch_trivia_questions');
+        const data = yield response.json();
+        yield put({ type: 'UPDATE_TRIVIA_QUESTIONS', questions: data.questions });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function* fetchTriviaAnswers() {
+    try {
+        const response = yield call(fetch, 'http://localhost:8000/api/fetch_trivia_answers');
+        const data = yield response.json();
+        if (data.skipSong === true) {
+            yield put({ type: 'UPDATE_TRIVIA_ANSWERS', questions: data.answers });
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 function* sagas() {
     yield all([
         takeEvery('FETCH_QUEUE', fetchQueue),
@@ -109,6 +131,8 @@ function* sagas() {
         takeEvery('FETCH_SHOULD_STOP_WATCH', fetchShouldStopWatch),
         takeEvery('FETCH_SONG_QUEUE', fetchSongQueue),
         takeEvery('SAVE_TRIVIA_QUESTION', saveTriviaQuestion),
+        takeEvery('FETCH_TRIVIA_QUESTIONS', fetchTriviaQuestions),
+        takeEvery('FETCH_TRIVIA_ANSWERS', fetchTriviaAnswers),
     ]);
 }
 

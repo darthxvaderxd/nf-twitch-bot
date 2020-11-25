@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "mkdirs": "mkdirp ./dist/hangman && mkdirp ./dist/messages && mkdirp ./dist/streams && mkdirp ./dist/song_requests && mkdirp ./dist/trivia && mkdirp ./dist/trivia_questions",
+    "mkdirs": "mkdirp ./dist/hangman && mkdirp ./dist/messages && mkdirp ./dist/streams && mkdirp ./dist/song_requests && mkdirp ./dist/trivia/answers && mkdirp ./dist/trivia_questions",
     "prestart": "npm run build && npm run mkdirs",
     "start": "node server.js",
     "start:webpack": "webpack serve",
