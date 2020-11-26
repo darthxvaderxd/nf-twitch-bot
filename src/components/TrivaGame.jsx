@@ -5,6 +5,7 @@ import "../styles/Trivia.css";
 
 let timmy = null;
 let triviaTimer = null;
+const TRIVIA_SECONDS = 60;
 
 class TriviaGame extends PureComponent {
     constructor(props) {
@@ -12,10 +13,12 @@ class TriviaGame extends PureComponent {
 
         this.state = {
             currentQuestion: 0,
-            seconds: 60,
+            seconds: TRIVIA_SECONDS,
             scoring: false,
             gameOver: false,
         };
+
+        this.setScoringData( { scores: {} });
     }
 
     componentDidMount() {
@@ -37,6 +40,59 @@ class TriviaGame extends PureComponent {
         dispatch({ type: 'FETCH_TRIVIA_STATE' });
     }
 
+    getScoringData() {
+        try {
+            return JSON.parse(localStorage.getItem('scores'));
+        } catch(e) {
+            return { scores: {} };
+        }
+    }
+
+    setScoringData(storedData) {
+        localStorage.setItem('scores', JSON.stringify(storedData));
+    }
+
+    scoreTriviaQuestion() {
+        const { triviaAnswers: answers, triviaQuestions: questions } = this.props;
+        const { currentQuestion } = this.state;
+        const storedData = this.getScoringData();
+        const question = questions[currentQuestion];
+        const { correctAnswer } = question;
+
+        answers.forEach((a) => {
+            const { answer, displayName } = a.params.answer;
+            const index = answers.findIndex((a) => a.params.answer.displayName === displayName);
+            const answerPlacement = answers.length - index;
+            let mappedAnswer = '';
+            switch (answer.toLowerCase()) {
+                case 'a':
+                    mappedAnswer = "1";
+                    break;
+                case 'b':
+                    mappedAnswer = "2";
+                    break;
+                case 'c':
+                    mappedAnswer = "3";
+                    break;
+                case 'd':
+                    mappedAnswer = "4";
+                    break;
+                default:
+                    mappedAnswer = "-1";
+            }
+
+            if (typeof storedData.scores[displayName] === 'undefined') {
+                storedData.scores[displayName] = 0;
+            }
+
+            if (Number(mappedAnswer) === Number(correctAnswer)) {
+                const multiplier = (answerPlacement / answers.length);
+                storedData.scores[displayName] += Math.ceil((multiplier > .25 ? multiplier : .25) * 1000);
+            }
+        });
+        this.setScoringData(storedData);
+    }
+
     triviaTimer() {
         const { seconds, scoring, currentQuestion } = this.state;
         const {
@@ -46,8 +102,8 @@ class TriviaGame extends PureComponent {
         } = this.props;
 
         if (triviaPaused) {
-            if (seconds !== 60) {
-                this.setState({ seconds: 60 });
+            if (seconds !== TRIVIA_SECONDS) {
+                this.setState({ seconds: TRIVIA_SECONDS });
             }
         } else if (seconds === 0) {
             if (scoring) {
@@ -55,7 +111,7 @@ class TriviaGame extends PureComponent {
                     type: 'CLEAR_TRIVIA_ANSWERS',
                 });
                 this.setState({
-                    seconds: 60,
+                    seconds: TRIVIA_SECONDS,
                     scoring: false,
                     currentQuestion: currentQuestion + 1,
                 }, () => {
@@ -65,8 +121,10 @@ class TriviaGame extends PureComponent {
                 });
             } else {
                 this.setState({
-                    seconds: 60,
+                    seconds: TRIVIA_SECONDS,
                     scoring: true,
+                }, () => {
+                    this.scoreTriviaQuestion();
                 });
             }
         } else {
@@ -93,22 +151,22 @@ class TriviaGame extends PureComponent {
                     {question}
                 </div>
                 <div className="TriviaGame-answers">
-                    <div className={correctAnswer === "1" && scoring
+                    <div className={Number(correctAnswer) === 1 && scoring
                         ? "TriviaGame-answer right"
                         : "TriviaGame-answer"}>
                         [!t a]. {option1}
                     </div>
-                    <div className={correctAnswer === "2" && scoring
+                    <div className={Number(correctAnswer) === 2 && scoring
                         ? "TriviaGame-answer right"
                         : "TriviaGame-answer"}>
                         [!t b]. {option2}
                     </div>
-                    <div className={correctAnswer === "3" && scoring
+                    <div className={Number(correctAnswer) === 3 && scoring
                         ? "TriviaGame-answer right"
                         : "TriviaGame-answer"}>
                         [!t c]. {option3}
                     </div>
-                    <div className={correctAnswer === "4" && scoring
+                    <div className={Number(correctAnswer) === 4 && scoring
                         ? "TriviaGame-answer right"
                         : "TriviaGame-answer"}>
                         [!t d]. {option4}
@@ -116,6 +174,39 @@ class TriviaGame extends PureComponent {
                 </div>
             </>
         );
+    }
+
+    getScoreTicker() {
+        const scoringData = this.getScoringData();
+        const keys = Object.keys(scoringData.scores);
+        if (keys.length > 0) {
+            const scores = keys.map((displayName) => ({ displayName, score: scoringData.scores[displayName] }))
+                .sort((a, b) => {
+                    if (a.score > b.score) {
+                        return -1;
+                    } else if (a.score < b.score) {
+                        return 1;
+                    }
+                    return 0;
+                }).map((score, place) => {
+                    return (
+                        <span>
+                            {place + 1}. {score.displayName}: {score.score} |&nbsp;
+                        </span>
+                    );
+                });
+            return (
+                <marquee direction="left" className="TriviaGame-marquee">
+                    {scores}
+                </marquee>
+            );
+        } else {
+            return (
+                <marquee direction="left" className="TriviaGame-marquee">
+                    No scores yet...
+                </marquee>
+            )
+        }
     }
 
     render() {
@@ -138,12 +229,15 @@ class TriviaGame extends PureComponent {
 
         if (scoring) {
             return (
-                <div className="TriviaGame">
-                    <div className="TriviaGame-question">
-                        Scoring question
+                <>
+                    <div className="TriviaGame">
+                        <div className="TriviaGame-question">
+                            Scoring question
+                        </div>
+                        {this.getQuestionCode()}
                     </div>
-                    {this.getQuestionCode()}
-                </div>
+                    {this.getScoreTicker()}
+                </>
             );
         } else if (questions.length > 0 && playingTrivia && !triviaPaused) {
             if (triviaTimer === null) {
@@ -160,6 +254,7 @@ class TriviaGame extends PureComponent {
                             {answersReact}
                         </div>
                     )}
+                    {this.getScoreTicker()}
                 </>
             );
         } else if (triviaPaused) {
@@ -170,11 +265,14 @@ class TriviaGame extends PureComponent {
             }
 
             return (
-                <div className="TriviaGame">
-                    <div className="TriviaGame-question">
-                        One moment. Trivia is currently paused.
+                <>
+                    <div className="TriviaGame">
+                        <div className="TriviaGame-question">
+                            One moment. Trivia is currently paused.
+                        </div>
                     </div>
-                </div>
+                    {this.getScoreTicker()}
+                </>
             );
         }
 
