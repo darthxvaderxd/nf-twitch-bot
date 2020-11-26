@@ -15,6 +15,8 @@ const initialState = {
     defaultPlaylist,
     triviaQuestions: [],
     triviaAnswers: [],
+    playingTrivia: false,
+    triviaPaused: false,
 };
 
 function queueReducer(state = initialState.queue, action) {
@@ -96,7 +98,7 @@ function playlistReducer(state = initialState.defaultPlaylist, action) {
 function triviaQuestionsReducer(state = initialState.triviaQuestions, action) {
     switch (action.type) {
         case 'UPDATE_TRIVIA_QUESTIONS':
-            return action.triviaQuestions;
+            return action.questions;
     }
     return state;
 }
@@ -104,7 +106,32 @@ function triviaQuestionsReducer(state = initialState.triviaQuestions, action) {
 function triviaAnswersReducer(state = initialState.triviaAnswers, action) {
     switch (action.type) {
         case 'UPDATE_TRIVIA_ANSWERS':
-            return [...state, ...action.triviaQuestions];
+            // we gotta remove possible duplicate people answering
+            const lessAnswers = action.triviaAnswers.filter((a) =>
+                state.findIndex(
+                    (s) => s.params.answer.displayName === a.params.answer.displayName)
+                    === -1
+            );
+
+            return [...state, ...lessAnswers];
+        case 'CLEAR_TRIVIA_ANSWERS':
+            return [];
+    }
+    return state;
+}
+
+function playingTriviaReducer(state = initialState.playingTrivia, action) {
+    switch (action.type) {
+        case 'UPDATE_PLAYING_TRIVIA':
+            return action.playingTrivia;
+    }
+    return state;
+}
+
+function triviaPausedReducer(state = initialState.triviaPaused, action) {
+    switch (action.type) {
+        case 'UPDATE_TRIVIA_PAUSED':
+            return action.triviaPaused;
     }
     return state;
 }
@@ -119,4 +146,6 @@ export default combineReducers({
     defaultPlaylist: playlistReducer,
     triviaQuestions: triviaQuestionsReducer,
     triviaAnswers: triviaAnswersReducer,
+    playingTrivia: playingTriviaReducer,
+    triviaPaused: triviaPausedReducer,
 });

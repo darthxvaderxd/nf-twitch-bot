@@ -323,4 +323,11 @@ module.exports = [
         modOnly: true,
         coolDown: 0,
     },
+    {
+        command: '!lurk',
+        cb: (client, params, target) => {
+            client.say(target, `We love our lurkers in chat, thank you for that lurk @${params.displayName}`);
+        },
+        coolDown: 0,
+    },
 ];

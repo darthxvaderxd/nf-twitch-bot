@@ -58,7 +58,7 @@ app.get('/api/hangman', (request, response) => {
 });
 
 app.get('/api/watch', (request, response) => {
-    let data = { stopWatchStream: false }
+    let data = { stopWatchStream: false };
     try {
         // yes I know this is blocking.... but only one user should be needing it so idc
         const text = fs.readFileSync(path.join(__dirname, 'dist/streams/_watching.json'), 'utf8');
@@ -87,7 +87,7 @@ app.get('/api/song_requests', (request, response) => {
 });
 
 app.get('/api/should_skip_song', (request, response) => {
-    let data = { skipSong: false }
+    let data = { skipSong: false };
     try {
         // yes I know this is blocking.... but only one user should be needing it so idc
         const text = fs.readFileSync(path.join(__dirname, 'dist/streams/_skip.json'), 'utf8');
@@ -103,7 +103,7 @@ app.get('/api/should_skip_song', (request, response) => {
 });
 
 app.get('/api/should_pause_song', (request, response) => {
-    let data = { pauseSong: false }
+    let data = { pauseSong: false };
     try {
         // yes I know this is blocking.... but only one user should be needing it so idc
         const text = fs.readFileSync(path.join(__dirname, 'dist/streams/_pause.json'), 'utf8');
@@ -130,9 +130,59 @@ app.post('/api/new_trivia_question', (request, response) => {
     }
 });
 
+app.get('/api/trivia_live', (request, response) => {
+    let data = { playingTrivia: false, triviaPaused: false };
+    try {
+        // yes I know this is blocking.... but only one user should be needing it so idc
+        const playingTriviaText = fs.readFileSync(path.join(__dirname, '/dist/trivia/_playing.json'), 'utf8');
+        const triviaPausedText = fs.readFileSync(path.join(__dirname, '/dist/trivia/_paused.json'), 'utf8');
+        const playingTrivia = JSON.parse(playingTriviaText);
+        const triviaPaused = JSON.parse(triviaPausedText);
+        data = {
+            playingTrivia: playingTrivia.playingTrivia,
+            triviaPaused: triviaPaused.triviaPaused,
+        };
+    } catch (e) {
+        // meh, yolo
+    }
+
+    response.send(JSON.stringify(data));
+});
+
+app.get('/api/trivia_game', (request, response) => {
+    let data = { triviaQuestions: [] };
+    try {
+        // yes I know this is blocking.... but only one user should be needing it so idc
+        const text = fs.readFileSync(path.join(__dirname, '/dist/trivia/game.json'), 'utf8');
+        data = JSON.parse(text);
+    } catch (e) {
+        // meh, yolo
+    }
+
+    response.send(JSON.stringify(data));
+});
+
+app.get('/api/trivia_answers', (request, response) => {
+    let triviaAnswers = [];
+    try {
+        fs.readdirSync(path.join(__dirname, '/dist/trivia/answers')).forEach((file) => {
+            if (triviaAnswers.length < 100) {
+                const filePath = path.join(__dirname, `/dist/trivia/answers/${file}`);
+                triviaAnswers.push({ id: file, params: require(filePath) });
+                // yes I know this is blocking.... but only one user should be needing it so idc
+                fs.unlinkSync(filePath);
+            }
+        });
+    } catch (e) {
+        // meh, yolo
+    }
+
+    response.send(JSON.stringify({ triviaAnswers }));
+});
+
 app.get('/interact', serveIndex);
 app.get('/music', serveIndex);
-app.get('/game/trivia', serveIndex);
+app.get('/trivia/game', serveIndex);
 app.get('/trivia/admin', serveIndex);
 
 app.get('*', express.static(path.join(__dirname, 'dist')));

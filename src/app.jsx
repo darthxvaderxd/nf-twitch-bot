@@ -33,7 +33,7 @@ ReactDOM.render(
             <div>
                 <Route path="/interact" component={Messages} />
                 <Route path="/music" component={SongRequest} />
-                <Route path="/game/trivia" component={TriviaGame} />
+                <Route path="/trivia/game" component={TriviaGame} />
                 <Route path="/trivia/admin" component={TriviaAdmin} />
             </div>
         </Router>

@@ -96,7 +96,6 @@ function* saveTriviaQuestion(action) {
             body: JSON.stringify(action.question),
         };
         const response = yield call(fetch, 'http://localhost:8000/api/new_trivia_question', params);
-        console.log(yield response.json());
     } catch (e) {
         console.error(e);
     }
@@ -104,21 +103,42 @@ function* saveTriviaQuestion(action) {
 
 function* fetchTriviaQuestions() {
     try {
-        const response = yield call(fetch, 'http://localhost:8000/api/fetch_trivia_questions');
+        const response = yield call(fetch, 'http://localhost:8000/api/trivia_game');
         const data = yield response.json();
-        yield put({ type: 'UPDATE_TRIVIA_QUESTIONS', questions: data.questions });
+        if (data.triviaQuestions.length > 0) {
+            yield put({type: 'UPDATE_TRIVIA_QUESTIONS', questions: data.triviaQuestions});
+        }
     } catch (e) {
         console.error(e);
     }
 }
 
 function* fetchTriviaAnswers() {
+    // fetch the trivia answers
     try {
-        const response = yield call(fetch, 'http://localhost:8000/api/fetch_trivia_answers');
+        const response = yield call(fetch, 'http://localhost:8000/api/trivia_answers');
         const data = yield response.json();
-        if (data.skipSong === true) {
-            yield put({ type: 'UPDATE_TRIVIA_ANSWERS', questions: data.answers });
+        if (data.triviaAnswers.length > 0) {
+            yield put({type: 'UPDATE_TRIVIA_ANSWERS', triviaAnswers: data.triviaAnswers});
         }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function* fetchTriviaState() {
+    // fetch the trivia game state
+    try {
+        const response = yield call(fetch, 'http://localhost:8000/api/trivia_live');
+        const data = yield response.json();
+        yield put({
+            type: 'UPDATE_PLAYING_TRIVIA',
+            playingTrivia: data.playingTrivia,
+        });
+        yield put({
+            type: 'UPDATE_TRIVIA_PAUSED',
+            triviaPaused: data.triviaPaused,
+        });
     } catch (e) {
         console.error(e);
     }
@@ -133,6 +153,7 @@ function* sagas() {
         takeEvery('SAVE_TRIVIA_QUESTION', saveTriviaQuestion),
         takeEvery('FETCH_TRIVIA_QUESTIONS', fetchTriviaQuestions),
         takeEvery('FETCH_TRIVIA_ANSWERS', fetchTriviaAnswers),
+        takeEvery('FETCH_TRIVIA_STATE', fetchTriviaState)
     ]);
 }
 
