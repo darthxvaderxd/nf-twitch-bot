@@ -77,7 +77,7 @@ class Messages extends PureComponent {
                 )
             default:
                 // uh now what, do nothing
-                break;
+                return (<div />);
         }
     }
 
