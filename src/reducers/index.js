@@ -17,6 +17,7 @@ const initialState = {
     triviaAnswers: [],
     playingTrivia: false,
     triviaPaused: false,
+    friends: [],
 };
 
 function queueReducer(state = initialState.queue, action) {
@@ -136,6 +137,14 @@ function triviaPausedReducer(state = initialState.triviaPaused, action) {
     return state;
 }
 
+function friendsReducer(state = initialState.friends, action) {
+    switch (action.type) {
+        case 'UPDATE_FRIENDS':
+            return action.friends;
+    }
+    return state;
+}
+
 export default combineReducers({
     queue: queueReducer,
     guesses: hangmanReducer,
@@ -148,4 +157,5 @@ export default combineReducers({
     triviaAnswers: triviaAnswersReducer,
     playingTrivia: playingTriviaReducer,
     triviaPaused: triviaPausedReducer,
+    friends: friendsReducer,
 });

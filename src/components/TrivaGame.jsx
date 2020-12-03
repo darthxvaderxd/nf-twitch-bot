@@ -24,7 +24,7 @@ class TriviaGame extends PureComponent {
     componentDidMount() {
         timmy = setInterval(() => {
             this.requestTriviaData();
-        }, 1000);
+        }, 100);
     }
 
     requestTriviaData() {
@@ -94,7 +94,12 @@ class TriviaGame extends PureComponent {
     }
 
     triviaTimer() {
-        const { seconds, scoring, currentQuestion } = this.state;
+        const {
+            seconds,
+            scoring,
+            currentQuestion,
+            gameOver,
+        } = this.state;
         const {
             dispatch,
             triviaQuestions: questions,
@@ -106,6 +111,9 @@ class TriviaGame extends PureComponent {
                 this.setState({ seconds: TRIVIA_SECONDS });
             }
         } else if (seconds === 0) {
+            if (gameOver) {
+                this.setState({ gameOver: false, scoring: false, seconds: TRIVIA_SECONDS });
+            }
             if (scoring) {
                 dispatch({
                     type: 'CLEAR_TRIVIA_ANSWERS',
@@ -121,7 +129,7 @@ class TriviaGame extends PureComponent {
                 });
             } else {
                 this.setState({
-                    seconds: TRIVIA_SECONDS,
+                    seconds: 30,
                     scoring: true,
                 }, () => {
                     this.scoreTriviaQuestion();
@@ -135,45 +143,49 @@ class TriviaGame extends PureComponent {
     getQuestionCode() {
         const { currentQuestion, scoring, seconds } = this.state;
         const { triviaQuestions: questions } = this.props;
-        const {
-            question,
-            option1,
-            option2,
-            option3,
-            option4,
-            correctAnswer,
-        } = questions[currentQuestion];
+        if (questions.length > 0 && currentQuestion < questions.length) {
+            const {
+                question,
+                option1,
+                option2,
+                option3,
+                option4,
+                correctAnswer,
+            } = questions[currentQuestion];
 
-        return (
-            <>
-                <div className="TriviaGame-question">
-                    [{currentQuestion + 1} of {questions.length}] [{seconds}]<br />
-                    {question}
-                </div>
-                <div className="TriviaGame-answers">
-                    <div className={Number(correctAnswer) === 1 && scoring
-                        ? "TriviaGame-answer right"
-                        : "TriviaGame-answer"}>
-                        [!t a]. {option1}
+            return (
+                <>
+                    <div className="TriviaGame-question">
+                        [{currentQuestion + 1} of {questions.length}] [{seconds}]<br/>
+                        {question}
                     </div>
-                    <div className={Number(correctAnswer) === 2 && scoring
-                        ? "TriviaGame-answer right"
-                        : "TriviaGame-answer"}>
-                        [!t b]. {option2}
+                    <div className="TriviaGame-answers">
+                        <div className={Number(correctAnswer) === 1 && scoring
+                            ? "TriviaGame-answer right"
+                            : "TriviaGame-answer"}>
+                            [!t a]. {option1}
+                        </div>
+                        <div className={Number(correctAnswer) === 2 && scoring
+                            ? "TriviaGame-answer right"
+                            : "TriviaGame-answer"}>
+                            [!t b]. {option2}
+                        </div>
+                        <div className={Number(correctAnswer) === 3 && scoring
+                            ? "TriviaGame-answer right"
+                            : "TriviaGame-answer"}>
+                            [!t c]. {option3}
+                        </div>
+                        <div className={Number(correctAnswer) === 4 && scoring
+                            ? "TriviaGame-answer right"
+                            : "TriviaGame-answer"}>
+                            [!t d]. {option4}
+                        </div>
                     </div>
-                    <div className={Number(correctAnswer) === 3 && scoring
-                        ? "TriviaGame-answer right"
-                        : "TriviaGame-answer"}>
-                        [!t c]. {option3}
-                    </div>
-                    <div className={Number(correctAnswer) === 4 && scoring
-                        ? "TriviaGame-answer right"
-                        : "TriviaGame-answer"}>
-                        [!t d]. {option4}
-                    </div>
-                </div>
-            </>
-        );
+                </>
+            );
+        } else {
+            return (<>There are no questions</>)
+        }
     }
 
     getScoreTicker() {
@@ -210,7 +222,7 @@ class TriviaGame extends PureComponent {
     }
 
     render() {
-        const { scoring } = this.state;
+        const { scoring, gameOver } = this.state;
         const {
             triviaQuestions: questions,
             triviaAnswers: answers,
@@ -227,7 +239,37 @@ class TriviaGame extends PureComponent {
             );
         });
 
-        if (scoring) {
+        if (gameOver) {
+            const scoringData = this.getScoringData();
+            const scores = keys.map((displayName) => ({ displayName, score: scoringData.scores[displayName] }))
+                .sort((a, b) => {
+                    if (a.score > b.score) {
+                        return -1;
+                    } else if (a.score < b.score) {
+                        return 1;
+                    }
+                    return 0;
+                }).map((score, place) => {
+                    return (
+                        <div>
+                            {place + 1}. {score.displayName}: {score.score} |&nbsp;
+                        </div>
+                    );
+                });
+            return (
+                <>
+                    <div className="TriviaGame">
+                        <div className="TriviaGame-question">
+                            This game is over, here are the scores
+                        </div>
+                        <div className="TriviaGame-answers">
+                            {scores}
+                        </div>
+                    </div>
+
+                </>
+            )
+        } else if (scoring && questions.length > 0) {
             return (
                 <>
                     <div className="TriviaGame">

@@ -330,4 +330,11 @@ module.exports = [
         },
         coolDown: 0,
     },
+    {
+        command: '!discord',
+        cb: (client, params, target) => {
+            client.say(target, 'Join the discord at https://discord.gg/KFHEgTmpEj');
+        },
+        coolDown: 10,
+    },
 ];

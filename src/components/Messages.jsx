@@ -55,7 +55,7 @@ class Messages extends PureComponent {
                         <Soundboard {...message.params} />
                     );
                 }
-                break;
+                return (<div />);
             case '!gif':
                 if (message.params.rest.length > 0 && approvedGifs.includes(message.params.rest[0].toLowerCase())) {
                     return (
@@ -103,7 +103,7 @@ class Messages extends PureComponent {
         } else {
             this.fetchList();
         }
-        return '';
+        return (<div>&nbsp;</div>);
     }
 }
 

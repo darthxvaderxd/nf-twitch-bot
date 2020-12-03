@@ -7,8 +7,9 @@ const { v4: uuidv4 } = require('uuid');
 const twitchBot = require('./server-lib/twitch-chat-bot');
 const twitchApi = require('./server-lib/twitch-api');
 const customChatCommands = require('./chat-commands');
+const {getLiveFriends} = require("./server-lib/twitch-api");
 const { saveSkipSong } = require('./server-lib/commands/song-requests');
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 7000;
 
 const app = express();
 
@@ -166,7 +167,7 @@ app.get('/api/trivia_answers', (request, response) => {
     let triviaAnswers = [];
     try {
         fs.readdirSync(path.join(__dirname, '/dist/trivia/answers')).forEach((file) => {
-            if (triviaAnswers.length < 100) {
+            if (triviaAnswers.length < 1) {
                 const filePath = path.join(__dirname, `/dist/trivia/answers/${file}`);
                 triviaAnswers.push({ id: file, params: require(filePath) });
                 // yes I know this is blocking.... but only one user should be needing it so idc
@@ -180,10 +181,15 @@ app.get('/api/trivia_answers', (request, response) => {
     response.send(JSON.stringify({ triviaAnswers }));
 });
 
+app.get('/api/live_friends', (request, response) => {
+    response.send(JSON.stringify({ friends: getLiveFriends() || [] }));
+});
+
 app.get('/interact', serveIndex);
 app.get('/music', serveIndex);
 app.get('/trivia/game', serveIndex);
 app.get('/trivia/admin', serveIndex);
+app.get('/lurker', serveIndex);
 
 app.get('*', express.static(path.join(__dirname, 'dist')));
 

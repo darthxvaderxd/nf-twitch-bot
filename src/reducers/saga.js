@@ -7,7 +7,7 @@ import {
 
 function* fetchQueue() {
     try {
-        const response = yield call(fetch, 'http://localhost:8000/api/queue');
+        const response = yield call(fetch, 'http://localhost:7000/api/queue');
         const data = yield response.json();
         if (typeof data.messages !== 'undefined') {
             yield put({
@@ -22,7 +22,7 @@ function* fetchQueue() {
 
 function* fetchHangmanGuesses() {
     try {
-        const response = yield call(fetch, 'http://localhost:8000/api/hangman');
+        const response = yield call(fetch, 'http://localhost:7000/api/hangman');
         const data = yield response.json();
         if (typeof data.messages !== 'undefined') {
             yield put({
@@ -37,7 +37,7 @@ function* fetchHangmanGuesses() {
 
 function* fetchShouldStopWatch() {
     try {
-        const response = yield call(fetch, 'http://localhost:8000/api/watch');
+        const response = yield call(fetch, 'http://localhost:7000/api/watch');
         const data = yield response.json();
         if (data.stopWatchStream === true) {
             yield put({
@@ -53,7 +53,7 @@ function* fetchShouldStopWatch() {
 function* fetchSongQueue() {
     // check for new songs
     try {
-        const response = yield call(fetch, 'http://localhost:8000/api/song_requests');
+        const response = yield call(fetch, 'http://localhost:7000/api/song_requests');
         const data = yield response.json();
         yield put({
             type: 'UPDATED_SONG_QUEUE',
@@ -65,7 +65,7 @@ function* fetchSongQueue() {
 
     // check for song skips
     try {
-        const response = yield call(fetch, 'http://localhost:8000/api/should_skip_song');
+        const response = yield call(fetch, 'http://localhost:7000/api/should_skip_song');
         const data = yield response.json();
         if (data.skipSong === true) {
             yield put({ type: 'SHOULD_SKIP_SONG' });
@@ -76,7 +76,7 @@ function* fetchSongQueue() {
 
     // check for pause/unpause
     try {
-        const response = yield call(fetch, 'http://localhost:8000/api/should_pause_song');
+        const response = yield call(fetch, 'http://localhost:7000/api/should_pause_song');
         const data = yield response.json();
         if (data.pauseSong === true) {
             yield put({ type: 'SHOULD_PAUSE_SONG' });
@@ -95,7 +95,7 @@ function* saveTriviaQuestion(action) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(action.question),
         };
-        const response = yield call(fetch, 'http://localhost:8000/api/new_trivia_question', params);
+        const response = yield call(fetch, 'http://localhost:7000/api/new_trivia_question', params);
     } catch (e) {
         console.error(e);
     }
@@ -103,7 +103,7 @@ function* saveTriviaQuestion(action) {
 
 function* fetchTriviaQuestions() {
     try {
-        const response = yield call(fetch, 'http://localhost:8000/api/trivia_game');
+        const response = yield call(fetch, 'http://localhost:7000/api/trivia_game');
         const data = yield response.json();
         if (data.triviaQuestions.length > 0) {
             yield put({type: 'UPDATE_TRIVIA_QUESTIONS', questions: data.triviaQuestions});
@@ -116,7 +116,7 @@ function* fetchTriviaQuestions() {
 function* fetchTriviaAnswers() {
     // fetch the trivia answers
     try {
-        const response = yield call(fetch, 'http://localhost:8000/api/trivia_answers');
+        const response = yield call(fetch, 'http://localhost:7000/api/trivia_answers');
         const data = yield response.json();
         if (data.triviaAnswers.length > 0) {
             yield put({type: 'UPDATE_TRIVIA_ANSWERS', triviaAnswers: data.triviaAnswers});
@@ -129,7 +129,7 @@ function* fetchTriviaAnswers() {
 function* fetchTriviaState() {
     // fetch the trivia game state
     try {
-        const response = yield call(fetch, 'http://localhost:8000/api/trivia_live');
+        const response = yield call(fetch, 'http://localhost:7000/api/trivia_live');
         const data = yield response.json();
         yield put({
             type: 'UPDATE_PLAYING_TRIVIA',
@@ -138,6 +138,19 @@ function* fetchTriviaState() {
         yield put({
             type: 'UPDATE_TRIVIA_PAUSED',
             triviaPaused: data.triviaPaused,
+        });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function* fetchFriends() {
+    try {
+        const response = yield call(fetch, 'http://localhost:7000/api/live_friends');
+        const data = yield response.json();
+        yield put({
+            type: 'UPDATE_FRIENDS',
+            friends: data.friends,
         });
     } catch (e) {
         console.error(e);
@@ -153,7 +166,8 @@ function* sagas() {
         takeEvery('SAVE_TRIVIA_QUESTION', saveTriviaQuestion),
         takeEvery('FETCH_TRIVIA_QUESTIONS', fetchTriviaQuestions),
         takeEvery('FETCH_TRIVIA_ANSWERS', fetchTriviaAnswers),
-        takeEvery('FETCH_TRIVIA_STATE', fetchTriviaState)
+        takeEvery('FETCH_TRIVIA_STATE', fetchTriviaState),
+        takeEvery('FETCH_FRIENDS', fetchFriends),
     ]);
 }
 

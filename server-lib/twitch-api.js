@@ -33,27 +33,33 @@ const isStreamLive = async (userName) => {
         if (stream) { // save the latest stream info we can use this later
             fs.writeFileSync(path.join(__dirname, `../dist/streams/${userName.toLowerCase()}.json`), JSON.stringify(stream._data, null, 2));
         }
-        return await user.getStream() !== null;
+        if (typeof user.getStream !== 'undefined') {
+            return await user.getStream() !== null;
+        }
     } catch (e) {
         console.error(new Date(), e);
-        return false;
     }
+    return false;
 }
 
 const checkLiveFriends = async () => {
     for (let i = 0; i < friendsOfStream.length; i += 1) {
+        const username = friendsOfStream[i];
+        const clearUser = () => {
+            const index = liveFriends.indexOf(username);
+            if (index > -1) {
+                liveFriends.splice(index, 1);
+            }
+        }
         try {
-            const username = friendsOfStream[i];
             const live = await isStreamLive(username);
             if (live && !liveFriends.includes(username)) {
                 liveFriends.push(username);
             } else if (!live && liveFriends.includes(username)) {
-                const index = liveFriends.findIndex(username);
-                if (index > -1) {
-                    liveFriends.splice(index, 1);
-                }
+                clearUser();
             }
         } catch (e) {
+            clearUser();
             console.error(new Date(), e);
         }
     }

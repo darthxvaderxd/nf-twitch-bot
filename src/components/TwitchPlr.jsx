@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import _isEqual from 'lodash/isEqual';
 import '../styles/TwitchPlr.css';
 
 let timmy  = null;
@@ -10,7 +11,6 @@ class TwitchPlr extends PureComponent {
         window.queueLocked = true;
         const { dispatch } = props;
         super(props);
-
         dispatch({
             type: 'SHOULD_START_WATCH',
         });
@@ -20,6 +20,12 @@ class TwitchPlr extends PureComponent {
                 type: 'FETCH_SHOULD_STOP_WATCH',
             });
         }, 1000);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(!_isEqual(nextProps, this.state)){
+            this.setState(nextProps);
+        }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
