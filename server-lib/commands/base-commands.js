@@ -140,7 +140,7 @@ module.exports = [
                 });
             }
         },
-        subscriberOnly: true,
+        subscriberOnly: false,
         coolDown: 10,
     },
     {

@@ -58,13 +58,26 @@ const pauseTrivia = (client, target, params) => {
 };
 
 const stopTrivia = (client, target, params) => {
-    fs.unlinkSync(path.join(__dirname, '../../dist/trivia/game.json'));
+    try {
+        fs.unlinkSync(path.join(__dirname, '../../dist/trivia/game.json'));
+    } catch (e) {
+        console.error(new Date(), e);
+    }
 
-    fs.readdirSync(path.join(__dirname, '../../dist/trivia/answers')).forEach((file) => {
-        const filePath = path.join(__dirname, `../../dist/trivia/answers/${file}`);
-        fs.unlinkSync(filePath);
-    });
-    fs.writeFileSync(path.join(__dirname, '../../dist/trivia/_playing.json'), JSON.stringify({ playingTrivia: false }));
+    try {
+        fs.readdirSync(path.join(__dirname, '../../dist/trivia/answers')).forEach((file) => {
+            const filePath = path.join(__dirname, `../../dist/trivia/answers/${file}`);
+            fs.unlinkSync(filePath);
+        });
+    } catch (e) {
+        console.error(new Date(), e);
+    }
+
+    try {
+        fs.writeFileSync(path.join(__dirname, '../../dist/trivia/_playing.json'), JSON.stringify({playingTrivia: false}));
+    } catch (e) {
+        console.error(new Date(), e);
+    }
     client.say(target, "Trivia is Ending. Thank you all for playing!");
 };
 
@@ -108,7 +121,7 @@ module.exports = [
             }
         },
         modOnly: true,
-        coolDown: 10,
+        coolDown: 0,
     },
     {
         command: '!t',
