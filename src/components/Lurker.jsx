@@ -34,6 +34,7 @@ class Lurker extends PureComponent {
                         width: 924,
                         height: 340,
                         channel: friend,
+                        parent: [`http://${window.location.hostname}`]
                     });
                     const tim = setTimeout(() => {
                         const list = document.getElementsByClassName('tw-core-button--primary');
