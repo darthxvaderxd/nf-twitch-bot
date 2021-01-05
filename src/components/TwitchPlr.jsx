@@ -52,6 +52,7 @@ class TwitchPlr extends PureComponent {
             width: 1400,
             height: 600,
             channel: window.stream,
+            parent: [window.location.hostname]
         });
         const tim = setTimeout(() => {
             const list = document.getElementsByClassName('tw-core-button--primary');
