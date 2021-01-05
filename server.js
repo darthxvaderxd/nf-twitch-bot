@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const path = require('path');
 const fs = require('fs');
+const https = require('https');
 const { v4: uuidv4 } = require('uuid');
 
 const twitchBot = require('./server-lib/twitch-chat-bot');
@@ -22,7 +23,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
 
-app.listen(port, () =>{
+const httpsServer = https.createServer({
+    key: fs.readFileSync('/etc/letsencrypt/live/vader.nilfactor.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/vader.nilfactor.com/fullchain.pem'),
+}, app);
+
+httpsServer.listen(443, () =>{
     console.log(new Date(), `Server running on http://localhost:${port}/`);
 });
 
