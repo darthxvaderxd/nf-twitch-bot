@@ -10,7 +10,7 @@ const twitchApi = require('./server-lib/twitch-api');
 const customChatCommands = require('./chat-commands');
 const {getLiveFriends} = require("./server-lib/twitch-api");
 const { saveSkipSong } = require('./server-lib/commands/song-requests');
-const port = process.env.PORT || 7000;
+const port = process.env.PORT || 443;
 
 const app = express();
 

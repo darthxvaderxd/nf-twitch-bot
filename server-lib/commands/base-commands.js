@@ -7,7 +7,7 @@ const {
     isLive,
     getStream,
 } = require('../twitch-api');
-const { twitterName } = require('../../token.json');
+const { twitterName, youtubeChannel } = require('../../token.json');
 
 const requireSub = false
 
@@ -101,7 +101,7 @@ module.exports = [
             }
         },
         modOnly: true,
-        coolDown: 10,
+        coolDown: 5,
     },
     {
         command: '!botcode',
@@ -169,6 +169,13 @@ module.exports = [
         command: '!twitter',
         cb: (client, params, target) => {
             client.say(target, `add me on twitter at https://twitter.com/${twitterName}`);
+        },
+        coolDown: 5,
+    },
+    {
+        command: '!youtube',
+        cb: (client, params, target) => {
+            client.say(target, `checkout my YouTube at ${youtubeChannel}`);
         },
         coolDown: 5,
     },
