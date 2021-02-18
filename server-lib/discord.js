@@ -44,19 +44,20 @@ client.on('ready', async () => {
 
 const streamerTimer = setInterval(() => {
     streamsToWatch.forEach((streamer) => {
-        console.log('streamer => ', streamer);
         twitch.isLive(streamer.twitchChannel)
             .then((live) => {
                 if (live) {
                     if (!liveStreams.find(f => f === streamer.twitchChannel)) { // add role
+                        console.log(new Date(), `${streamer.name} has gone live on ${streamer.twitchChannel}`);
                         liveStreams.push(streamer.twitchChannel);
                         myGuild.members.fetch(streamer.id).then((member) => {
                             member.roles.add(token.discordAPI.liveRoleId);
-                            twitchChannel.send(`${streamer.name} @here is live at https://twitch.tv/${streamer.twitchChannel}`);
+                            twitchChannel.send(`${streamer.name} is live at https://twitch.tv/${streamer.twitchChannel} @here`);
                         });
                     }
                 } else {
                     if (liveStreams.find(f => f === streamer.twitchChannel)) { // remove role
+                        console.log(new Date(), `${streamer.name} is no longer live`);
                         liveStreams = liveStreams.filter((s) => s !== streamer.twitchChannel);
                         myGuild.members.fetch(streamer.id).then((member) => {
                             member.roles.remove(token.discordAPI.liveRoleId);
