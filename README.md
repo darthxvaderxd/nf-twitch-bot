@@ -23,3 +23,6 @@
   ]
 }
 ```
+
+// Discord to add a bot go to
+https://discordapp.com/oauth2/authorize?client_id=XXXXXXXXXXXX&scope=bot
