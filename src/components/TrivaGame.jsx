@@ -5,7 +5,7 @@ import "../styles/Trivia.css";
 
 let timmy = null;
 let triviaTimer = null;
-const TRIVIA_SECONDS = 4;
+const TRIVIA_SECONDS = 30;
 
 class TriviaGame extends PureComponent {
     constructor(props) {
