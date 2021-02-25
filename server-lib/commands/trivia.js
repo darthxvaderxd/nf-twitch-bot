@@ -60,6 +60,7 @@ const pauseTrivia = (client, target, params) => {
 const stopTrivia = (client, target, params) => {
     try {
         fs.unlinkSync(path.join(__dirname, '../../dist/trivia/game.json'));
+        playingTrivia = false;
     } catch (e) {
         console.error(new Date(), e);
     }
