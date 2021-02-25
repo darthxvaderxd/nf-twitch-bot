@@ -46,7 +46,7 @@ const streamerTimer = setInterval(() => {
     streamsToWatch.forEach((streamer) => {
         twitch.isLive(streamer.twitchChannel)
             .then((live) => {
-                if (live) {tr
+                if (live) {
                     if (!liveStreams.find(f => f === streamer.twitchChannel)) { // add role
                         console.log(new Date(), `${streamer.name} has gone live on ${streamer.twitchChannel}`);
                         liveStreams.push(streamer.twitchChannel);
