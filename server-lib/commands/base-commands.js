@@ -351,4 +351,11 @@ module.exports = [
         },
         coolDown: 5,
     },
+    {
+        command: '!lfg',
+        cb: (client, params, target) => {
+            client.say(target, 'Check out this new Conquest Looking for Game Discord to practice Bo3 and bo5 games for tournaments like Masters Tour Qualifiers without losing ladder ranks. https://discord.gg/vyNpQdfB');
+        },
+        coolDown: 5,
+    },
 ];
