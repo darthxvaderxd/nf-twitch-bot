@@ -6,4 +6,11 @@ module.exports = [
         },
         coolDown: 5,
     },
+    {
+        command: '!commands',
+        cb: (client, params, target) => {
+            client.say(target, '!gifs !sounds !roll !addsound !ban !twitter !youtube !sr !discord !deck !<class> !battle');
+        },
+        coolDown: 0,
+    },
 ];
