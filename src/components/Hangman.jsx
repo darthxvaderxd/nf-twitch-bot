@@ -577,50 +577,59 @@ class Hangman extends PureComponent {
             }, 15 * 1000);
         }
         return (
-            <div className="Hangman">
-                <div className="Hangman-letters">
-                    <div className="Hangman-message">
-                        {!won && guesses.letters.length < maxGuesses && (
-                            <>
-                                Guesses left {maxGuesses - guesses.letters.length} of {maxGuesses}
-                            </>
-                        )}
-                        {!won && guesses.letters.length >= maxGuesses && (
-                            <>
-                                Game over, chat lost! The word was <b>{word}</b>
-                            </>
-                        )}
-                        {won && (
-                            <>
-                                WOOOOOOOOOOOOO! Chat won! The word was <b>{word}</b>
-                            </>
-                        )}
-                    </div>
-                    {letters.map((letter, i) => (
-                        <div className="Hangman-letter">
-                            {!won && (
+            <>
+                <div className="Hangman">
+                    <div className="Hangman-letters">
+                        <div className="Hangman-message">
+                            {!won && guesses.letters.length < maxGuesses && (
                                 <>
-                                    {guesses.letters.includes(letter) ? letter : '-'}
+                                    Guesses left {maxGuesses - guesses.letters.length} of {maxGuesses}
+                                </>
+                            )}
+                            {!won && guesses.letters.length >= maxGuesses && (
+                                <>
+                                    Game over, chat lost! The word was <b>{word}</b>
                                 </>
                             )}
                             {won && (
                                 <>
-                                    {letter}
+                                    WOOOOOOOOOOOOO! Chat won! The word was <b>{word}</b>
                                 </>
                             )}
                         </div>
-                    ))}
-                    {!won && guesses.letters.length > 0 && (
-                        <div className="Hangman-guess">
-                            {guesses.letters.sort().map((guess, i) => (
-                              <>
-                                  {guess}
-                              </>
-                            ))}
-                        </div>
-                    )}
+                        {letters.map((letter, i) => (
+                            <div className="Hangman-letter">
+                                {!won && (
+                                    <>
+                                        {guesses.letters.includes(letter) ? letter : '-'}
+                                    </>
+                                )}
+                                {won && (
+                                    <>
+                                        {letter}
+                                    </>
+                                )}
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
+                {!won && guesses.letters.length > 0 && (
+                    <div className="Hangman">
+                        <div className="Hangman-letters">
+                            <div className="Hangman-message">
+                                Guesses...
+                            </div>
+                            <div className="Hangman-guess">
+                                {guesses.letters.sort().map((guess, i) => (
+                                    <>
+                                        {guess}&nbsp;
+                                    </>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </>
         );
     }
 }
