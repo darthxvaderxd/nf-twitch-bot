@@ -8,7 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 const twitchBot = require('./server-lib/twitch-chat-bot');
 const twitchApi = require('./server-lib/twitch-api');
 const customChatCommands = require('./chat-commands');
-const {getLiveFriends} = require("./server-lib/twitch-api");
+const { getLiveFriends } = require("./server-lib/twitch-api");
 const { saveSkipSong } = require('./server-lib/commands/song-requests');
 
 const discord = require('./server-lib/discord');

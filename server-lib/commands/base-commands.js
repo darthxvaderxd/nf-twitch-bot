@@ -7,7 +7,11 @@ const {
     isLive,
     getStream,
 } = require('../twitch-api');
-const { twitterName, youtubeChannel } = require('../../token.json');
+const {
+    twitterName = 'n/a',
+    youtubeChannel = 'n/a',
+    discordJoinCode = 'n/a'
+} = require('../../token.json');
 
 const requireSub = false
 
@@ -340,22 +344,8 @@ module.exports = [
     {
         command: '!discord',
         cb: (client, params, target) => {
-            client.say(target, 'Join the discord at https://discord.gg/KFHEgTmpEj');
+            client.say(target, `Join the discord at https://discord.gg/${discordJoinCode}`);
         },
         coolDown: 10,
-    },
-    {
-        command: '!battle',
-        cb: (client, params, target) => {
-            client.say(target, 'Join the battle at https://www.streamraiders.com/t/leosaint_');
-        },
-        coolDown: 5,
-    },
-    {
-        command: '!lfg',
-        cb: (client, params, target) => {
-            client.say(target, 'Check out this new Conquest Looking for Game Discord to practice Bo3 and bo5 games for tournaments like Masters Tour Qualifiers without losing ladder ranks. https://discord.gg/vyNpQdfB');
-        },
-        coolDown: 5,
     },
 ];
