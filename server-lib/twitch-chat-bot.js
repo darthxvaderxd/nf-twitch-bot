@@ -1,6 +1,7 @@
 const tmi = require('tmi.js');
 const token = require('../token.json');
 const get = require('lodash/get');
+const cron = require('./cron-commands');
 
 const params = {
     identity: {
@@ -13,9 +14,12 @@ const params = {
 const hooks = [];
 
 let client = null;
+let receivedMessages = 0;
 
 const onMessageHandler =  (target, context, message, self) => {
     context.displayName = context['display-name'];
+
+    receivedMessages += 1;
 
     const rest = message.split(' ');
     const command = rest.shift();
@@ -79,6 +83,7 @@ module.exports.connect = () => {
     client.connect()
         .then(() => {
             console.log(new Date(), 'Twitch bot connected');
+            cron(client, receivedMessages);
         }).catch((e) => {
         console.error(new Date(), e);
     });
