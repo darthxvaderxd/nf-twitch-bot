@@ -610,6 +610,15 @@ class Hangman extends PureComponent {
                             )}
                         </div>
                     ))}
+                    {!won && guesses.letters.length > 0 && (
+                        <div className="Hangman-guess">
+                            {guesses.letters.sort().map((guess, i) => (
+                              <>
+                                  {guess}
+                              </>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         );
