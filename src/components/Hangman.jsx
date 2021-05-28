@@ -614,7 +614,7 @@ class Hangman extends PureComponent {
                     </div>
                 </div>
                 {!won && guesses.letters.length > 0 && (
-                    <div className="Hangman">
+                    <div className="HangmanG">
                         <div className="Hangman-letters">
                             <div className="Hangman-message">
                                 Guesses...
