@@ -581,7 +581,7 @@ class Hangman extends PureComponent {
                         )}
                         {!won && guesses.letters.length >= maxGuesses && (
                             <>
-                                Game over, chat lost!
+                                Game over, chat lost! The word was {word}
                             </>
                         )}
                         {won && (

@@ -118,7 +118,7 @@ module.exports = [
     {
         command: '!olgra',
         cb: (client, params, target) => {
-            client.say(target, 'SMOrc OLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLGRAAAAAAAAAAAAAAAAAAA SMOrc');
+            client.say(target, 'OLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLGRAAAAAAAAAAAAAAAAAAA SMOrc');
         },
         coolDown: 5,
     },
