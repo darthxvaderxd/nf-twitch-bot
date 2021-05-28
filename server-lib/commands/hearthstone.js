@@ -109,6 +109,13 @@ module.exports = [
         coolDown: 5,
     },
     {
+        command: '!druid',
+        cb: (client, params, target) => {
+            client.say(target, 'Enough with the memes already');
+        },
+        coolDown: 5,
+    },
+    {
         command: '!coaching',
         cb: (client, params, target) => {
             client.say(target, 'If you want me for a coach I am flattered and can name many other people you should use. Should you insist msg me on !discord');

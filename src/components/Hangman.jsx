@@ -515,6 +515,12 @@ const words = [
     'cake',
     'abstracted',
     'silk',
+    'hearthstone',
+    'warlock',
+    'warrior',
+    'priest',
+    'shaman',
+    'druid',
 ];
 
 const maxGuesses = 15;
@@ -581,12 +587,12 @@ class Hangman extends PureComponent {
                         )}
                         {!won && guesses.letters.length >= maxGuesses && (
                             <>
-                                Game over, chat lost! The word was {word}
+                                Game over, chat lost! The word was <b>{word}</b>
                             </>
                         )}
                         {won && (
                             <>
-                                WOOOOOOOOOOOOO! Chat won
+                                WOOOOOOOOOOOOO! Chat won! The word was <b>{word}</b>
                             </>
                         )}
                     </div>
