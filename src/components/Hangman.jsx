@@ -650,3 +650,4 @@ export default connect((state, props) => {
         ...props,
     };
 })(Hangman);
+
