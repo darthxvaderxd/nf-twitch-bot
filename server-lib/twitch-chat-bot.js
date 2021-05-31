@@ -14,12 +14,16 @@ const params = {
 const hooks = [];
 
 let client = null;
+let clientTarget = null;
 
 const onMessageHandler =  (target, context, message, self) => {
     // update count
     cron.receivedAMessage();
 
-    console.log('target => ', target);
+    if (clientTarget === null) {
+        clientTarget = target;
+        cron.setClientTarget(target);
+    }
 
     context.displayName = context['display-name'];
 

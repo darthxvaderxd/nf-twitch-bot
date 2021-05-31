@@ -11,15 +11,33 @@ const cronCommands = [
 const sentMessages = [];
 
 let receivedMessages = 0;
+let target = null;
+
+// potential for infinite loop...
+const getNextMessage = () => {
+    if (cronCommands.length < 1 && sentMessages < 1) return;
+    if (cronCommands.length < 1) {
+        sentMessages.forEach((m) => cronCommands.push(m));
+    }
+
+    const message = cronCommands.pop();
+    sentMessages.push(message);
+    if (message.on === true) {
+        return message.message;
+    } else {
+        return getNextMessage();
+    }
+}
 
 module.exports = {
     cron: (client) => {
         setInterval(() => {
-            if (receivedMessages > 10) {
+            if (target !== null && receivedMessages > 10) {
                 receivedMessages = 0;
-                client.say()
+                client.say(target, getNextMessage())
             }
         }, 5000);
     },
-    receivedAMessage: () => receivedMessages += 1
+    receivedAMessage: () => receivedMessages += 1,
+    setClientTarget: (t) => target = t,
 }
