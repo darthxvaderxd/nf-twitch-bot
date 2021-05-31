@@ -15,8 +15,11 @@ let receivedMessages = 0;
 module.exports = {
     cron: (client) => {
         setInterval(() => {
-            console.log('receivedMessages => ', receivedMessages);
-        }, 1000);
+            if (receivedMessages > 10) {
+                receivedMessages = 0;
+                client.say()
+            }
+        }, 5000);
     },
     receivedAMessage: () => receivedMessages += 1
 }

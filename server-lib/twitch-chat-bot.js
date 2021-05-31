@@ -19,6 +19,8 @@ const onMessageHandler =  (target, context, message, self) => {
     // update count
     cron.receivedAMessage();
 
+    console.log('target => ', target);
+
     context.displayName = context['display-name'];
 
     const rest = message.split(' ');
