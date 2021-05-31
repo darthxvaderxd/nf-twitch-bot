@@ -14,12 +14,12 @@ const params = {
 const hooks = [];
 
 let client = null;
-let receivedMessages = 0;
 
 const onMessageHandler =  (target, context, message, self) => {
-    context.displayName = context['display-name'];
+    // update count
+    cron.receivedAMessage();
 
-    receivedMessages += 1;
+    context.displayName = context['display-name'];
 
     const rest = message.split(' ');
     const command = rest.shift();
@@ -83,7 +83,7 @@ module.exports.connect = () => {
     client.connect()
         .then(() => {
             console.log(new Date(), 'Twitch bot connected');
-            cron(client, receivedMessages);
+            cron.cron(client);
         }).catch((e) => {
         console.error(new Date(), e);
     });
