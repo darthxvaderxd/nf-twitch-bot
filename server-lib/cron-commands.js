@@ -32,7 +32,7 @@ const getNextMessage = () => {
 module.exports = {
     cron: (client) => {
         setInterval(() => {
-            if (target !== null && receivedMessages > 10) {
+            if (target !== null && receivedMessages > 20) {
                 receivedMessages = 0;
                 client.say(target, getNextMessage())
             }
