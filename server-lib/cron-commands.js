@@ -13,7 +13,7 @@ const sentMessages = [];
 let receivedMessages = 0;
 
 module.exports = {
-    cron: (client, receivedMessages) => {
+    cron: (client) => {
         setInterval(() => {
             console.log('receivedMessages => ', receivedMessages);
         }, 1000);
