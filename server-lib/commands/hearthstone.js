@@ -20,7 +20,7 @@ module.exports = [
     {
         command: '!deck',
         cb: (client, params, target) => {
-            client.say(target, `To see the decks I have been playing go to: https://d0nkey.top/streamer-decks?twitch_login=${twitchUsername}`);
+            client.say(target, `To see the decks I have been playing go to: https://d0nkey.top/streamer-decks?twitch_login=${twitchUsername.toLowerCase()}`);
         },
         coolDown: 5,
     },

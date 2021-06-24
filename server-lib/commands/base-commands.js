@@ -239,11 +239,15 @@ module.exports = [
     {
         command: '!guess',
         cb: (client, params, target) => {
-            if (params.rest.length > 0) {
-                saveHangManGuess({
-                    letter: params.rest[0].toLowerCase(),
-                    word: false,
-                });
+            if (params.rest[0].length > 0 && Number(params.rest[0]) != params.rest[0]) {
+                if (params.rest[0].length === 1) {
+                    saveHangManGuess({
+                        letter: params.rest[0].toLowerCase(),
+                        word: false,
+                    });
+                }
+            } else {
+                client.say(target, `@${params.rest[0]} is an invalid choice for a guess`);
             }
         },
         coolDown: 0,
