@@ -239,7 +239,7 @@ module.exports = [
     {
         command: '!guess',
         cb: (client, params, target) => {
-            if (params.rest[0].length > 0 && Number(params.rest[0]) != params.rest[0]) {
+            if (params.rest[0].length === 1 && Number(params.rest[0]) != params.rest[0]) {
                 if (params.rest[0].length === 1) {
                     saveHangManGuess({
                         letter: params.rest[0].toLowerCase(),
