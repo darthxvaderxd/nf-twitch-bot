@@ -247,7 +247,7 @@ module.exports = [
                     });
                 }
             } else {
-                client.say(target, `@${params.rest[0]} is an invalid choice for a guess`);
+                client.say(target, `${params.rest[0]} is an invalid choice for a guess`);
             }
         },
         coolDown: 0,
