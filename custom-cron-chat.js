@@ -4,19 +4,11 @@ module.exports = [
         on: false,
     },
     {
-        message: '@LeoSaint_ is so glad you are all here, thank you for your lurks, chats and etc.',
+        message: '@DracoCatt is so glad you are all here, thank you for your lurks, chats and etc.',
         on: true,
     },
     {
         message: 'LUL',
-        on: true,
-    },
-    {
-        message: 'iLOVEyou',
-        on: true,
-    },
-    {
-        message: 'PepoSabers do not forget to use them channel points ;)',
         on: true,
     },
     {

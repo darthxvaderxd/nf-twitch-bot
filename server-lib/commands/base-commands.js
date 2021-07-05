@@ -265,19 +265,6 @@ module.exports = [
         coolDown: 0,
     },
     {
-        command: '!friends',
-        cb: (client, params, target) => {
-            if (params.isMod) {
-                const friends = getLiveFriends().map((friend) => `twitch.tv/${friend}`).slice(0, 5);
-                if (friends.length > 0) {
-                    client.say(target, `Some of my friends are live check them out: ${friends.join(' ')}`);
-                }
-            }
-        },
-        modOnly: true,
-        coolDown: 10,
-    },
-    {
         command: '!watch',
         cb: async (client, params, target) => {
             if (params.isMod && params.rest.length > 0) {
