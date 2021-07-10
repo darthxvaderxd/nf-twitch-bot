@@ -129,4 +129,11 @@ module.exports = [
         },
         coolDown: 5,
     },
+    {
+        command: '!giveaway',
+        cb: (client, params, target) => {
+            client.say(target, 'https://www.hypehorizen.com/giveaway-united-in-stormind/ be sure to fill it out and tell them LeoSaint_ is your favorite streamer');
+        },
+        coolDown: 5,
+    }
 ];
