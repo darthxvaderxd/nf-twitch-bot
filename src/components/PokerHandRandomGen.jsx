@@ -33,9 +33,15 @@ export default class PokerHandRandomGen extends PureComponent {
             <div style={{
                 backgroundColor: color,
                 border: '1px solid #222',
-                color: 'white' }}
+                color: 'white',
+                textAlign: 'center',
+            }}
             >
                 <h1>{number}</h1>
+                <input
+                    type="button"
+                    value="Generate"
+                    onClick={() => this.generateNumber()} />
             </div>
         );
     }
