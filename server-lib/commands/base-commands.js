@@ -355,9 +355,9 @@ module.exports = [
     {
         command: '!hug',
         cb: async (client, params, target) => {
-            const userName = (params.rest[0] || params.displayName).replace('@', '');
-            const user = await getUser(userName);
-            client.say(target, `${user} has given you a hug`);
+            const hugee = (params.rest[0] || 'Everyone').replace('@', '');
+            const hugger = params.displayName
+            client.say(target, `${hugger} has given ${hugee} a hug`);
         },
         coolDown: 10,
     },

@@ -199,6 +199,7 @@ app.get('/music', serveIndex);
 app.get('/trivia/game', serveIndex);
 app.get('/trivia/admin', serveIndex);
 app.get('/lurker', serveIndex);
+app.get('/poker/gen', serveIndex);
 
 app.get('*', express.static(path.join(__dirname, 'dist')));
 
